@@ -12,6 +12,10 @@ Omdat roosters zo een belangrijke rol spelen in ons leven, is het triviaal dat e
 In onze case hebben we te maken met 609 studenten (zie [vakkenenstudenten.csv](https://github.com/Roshanmahes/Lectures-Lesroosters/blob/master/studentenenvakken.csv)). Elk van de studenten volgt tussen de één en vijf vakken in periode 4. Er zijn 29 vakken (zie [vakken.csv](https://github.com/Roshanmahes/Lectures-Lesroosters/blob/master/vakken.csv)). Verder zijn er zeven zalen (zie [zalen.csv](https://github.com/Roshanmahes/Lectures-Lesroosters/blob/master/zalen.csv)), waarin de studenten les hebben. Het is aan ons om de studenten in te delen in groepen, en deze lessen te roosteren, opdat elk van de studenten tevreden naar elk van zijn/haar lessen kan.
 
 ### Vereisten
+Natuurlijk zou een opdracht als deze eenvoudig uit te werken zijn als er geen verdere vereisten waren. Net als in de praktijk ontbreken deze noodzakelijkheden niet. Een goed rooster bestaat uit de volgende zaken:
 
+  1. apples
+  2. oranges
+  3. pears
 
 ## Toestandsruimte
