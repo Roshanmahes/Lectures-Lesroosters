@@ -22,6 +22,16 @@ Natuurlijk zou een opdracht als deze eenvoudig uit te werken zijn als er geen ve
   5. Een college duurt van 9:00-11:00, 11:00-13:00, 13:00-15:00 of 15:00-17:00 op een werkdag. Eén zo'n periode van twee uur wordt een tijdsslot genoemd.
   6. Een geldig weekrooster is een weekrooster waarvoor aan alle roosterbare activiteiten van ieder vak een tijdsslot met een zaal hebben. We noemen het paar tijdsslot-zaal een zaalslot.
 
-s
+Er zijn nog steeds meerdere roosters te maken die aan bovenstaande vereisten voldoen. Een student wil niet alleen een rooster hebben, maar ook dat hij/zij zo veel mogelijk opsteekt bij de vakken. Daarom zijn er enkele bonus- en maluspunten te verdienen, wat een indicatie geeft van hoe goed het door ons gemaakte rooster is:
+
+  * Een geldig weekrooster levert 1000 punten op.
+  
+  Bonuspunten:
+  * Studenten leren het meest als de activiteiten zoveel mogelijk verdeeld zijn over de week. Een vak van twee tot vier activiteiten die maximaal verdeeld zijn over de week levert 20 bonuspunten op. Voor twee activiteiten is dat ma-do of di-vr, voor drie activiteiten is dat ma-wo-vr en voor vier activiteiten is dat ma,di,do,vr.
+  
+  Maluspunten:
+  * Voor ieder vak van x activiteiten geldt dat ze 10 maluspunten opleveren als ze op x-1 dagen geroosterd zijn, 20 voor x-2 en 30 voor x-3.
+  * Voor ieder zaalslot geldt dat er één maluspunt valt voor iedere ingeschreven student die er volgens de opgegeven zaalgroote niet meer in past.
+  * Voor iedere student die meer dan één activiteit in een tijdsslot heeft (een roosterconflict) geldt 1 maluspunt per conflict.
 
 ## Toestandsruimte
