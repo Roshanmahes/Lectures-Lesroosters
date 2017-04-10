@@ -34,4 +34,9 @@ Er zijn nog steeds meerdere roosters te maken die aan bovenstaande vereisten vol
   * Voor ieder zaalslot geldt dat er één maluspunt valt voor iedere ingeschreven student die er volgens de opgegeven zaalgroote niet meer in past.
   * Voor iedere student die meer dan één activiteit in een tijdsslot heeft (een roosterconflict) geldt 1 maluspunt per conflict.
 
+Tot slot is er nog één escape optie, indien het maken van het rooster ons maar niet wil lukken:
+
+  Escape:
+  * De grootste zaal heeft ook een avondslot van 17:00-19:00, maar gebruik van het avondslot kost 50 maluspunten.
+
 ## Toestandsruimte
