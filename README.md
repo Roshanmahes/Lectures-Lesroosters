@@ -40,4 +40,5 @@ Tot slot is er nog één escape optie, indien het maken van het rooster ons maar
   * De grootste zaal heeft ook een avondslot van 17:00-19:00, maar gebruik van het avondslot kost 50 maluspunten.
 
 ## Toestandsruimte
-5*(5)*7*(609/29)??
+(5)*(5)*(7)*(609/29)??
+?? 609 nCr 29
