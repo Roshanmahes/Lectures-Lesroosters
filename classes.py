@@ -8,7 +8,10 @@ class Student:
                 courses.append(str)
         self.courses = courses
 
-class Course:
+class Course(object):
+    """
+
+    """
     def __init__(self, data, students):
         self.name = data[0]
         self.hoorcolleges = int(data[1])
@@ -17,6 +20,7 @@ class Course:
         self.practica = int(data[4])
         self.p_cap = int(data[5])
         self.students = students
+
 
 class Lecture:
     def __init__(self, type, course, students):
@@ -29,7 +33,7 @@ class Lecture:
             self.cap = course.p_cap
         self.students = students
 
-class LectureHall:
+class LectureHall(object):
     def __init__(self, data):
         self.name = data[0]
         self.cap = int(data[1])
