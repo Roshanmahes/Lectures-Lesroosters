@@ -1,4 +1,4 @@
-class Student:
+"""class Student:
     def __init__(self, data):
         self.name = data[1] + " " + data[0]
         self.id = int(data[2])
@@ -7,8 +7,9 @@ class Student:
             if str:
                 courses.append(str)
         self.courses = courses
+"""
 
-class Course(object):
+class Course:
     """
 
     """
@@ -21,21 +22,21 @@ class Course(object):
         self.p_cap = int(data[5])
         self.students = students
 
+class LectureHall:
+    def __init__(self, data):
+        self.name = data[0]
+        self.cap = int(data[1])
 
 class Lecture:
-    def __init__(self, type, course, students):
+    def __init__(self, _type, course, students, lecturehall):
         self.courseName = course.name
-        if type == "hoorcollege":
-            self.cap = 1000
-        else if type == "werkcollege":
+        self.type = _type
+        # studenten wisselen tussen lecture classes met dezelfde courseName en type
+        if _type == "hoorcollege":
+            self.cap = len(students)
+        elif _type == "werkcollege":
             self.cap = course.wc_cap
         else:
             self.cap = course.p_cap
         self.students = students
-
-class LectureHall(object):
-    def __init__(self, data):
-        self.name = data[0]
-        self.cap = int(data[1])
-        self.lectures = list(20)
-        #
+        self.lecturehall = lecturehall
