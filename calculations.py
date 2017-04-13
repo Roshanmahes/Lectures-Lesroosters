@@ -17,13 +17,13 @@ def ncr(n, r):
 students = []
 courses = []
 halls = []
-with open('studentenenvakken.csv', 'r', encoding='utf-8') as f:
+with open('data/studentenenvakken.csv', 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
     students = list(reader)
-with open('vakken.csv', 'r', encoding='utf-8') as f:
+with open('data/vakken.csv', 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
     courses = list(reader)
-with open('zalen.csv', 'r', encoding='utf-8') as f:
+with open('data/zalen.csv', 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
     halls = list(reader)
 
@@ -49,35 +49,35 @@ for L in course_enrollments:
     students_per_course.append(L[1])
 
 
-# generate a list of the amount of WC and P groups necessary per course
-WCPGroups = []
+# generate a list of the amount of seminar and practical groups necessary per course
+SPGroups = []
 for course,student_count in zip(courses[1:],students_per_course):
     if course[2] == 0 and course[4] == 0:
-        WCPGroups.append(0)
+        SPGroups.append(0)
     else:
         if course[2] != 0:
             capacity = course[3]
         else:
             capacity = course[5]
         if student_count % capacity > 0:
-            WCPGroups.append(student_count//capacity + 1)
+            SPGroups.append(student_count//capacity + 1)
         else:
-            WCPGroups.append(student_count//capacity)
+            SPGroups.append(student_count//capacity)
 
 
-# generate a list of sizes of all lectures (HC, WC and P)
-# makes use of the fact that any course with both WC and P lectures
+# generate a list of sizes of all teachings (lecture, seminar and practical)
+# makes use of the fact that any course with both seminar and practical teachings
 # will have equal capacities for both types
-lectures = []
+teachings = []
 for i in range(len(courses)-1):
     for _ in range(courses[i+1][1]):
-        lectures.append(students_per_course[i])
-    for _ in range(WCPGroups[i]*(courses[i+1][2]+courses[i+1][4])):
+        teachings.append(students_per_course[i])
+    for _ in range(SPGroups[i]*(courses[i+1][2]+courses[i+1][4])):
         if course[2] != 0:
-            lectures.append(course[3])
+            teachings.append(course[3])
         else:
-            lectures.append(course[5])
-lectures.sort(reverse=True)
+            teachings.append(course[5])
+teachings.sort(reverse=True)
 
 
 # upper bound to number of ways the lectures can be scheduled
@@ -85,9 +85,9 @@ prod1 = 1
 prod1str = ''
 big_enough_halls = 0
 tracker = 0
-for lecture in lectures:
+for teaching in teachings:
     for hall in halls[1:]:
-        if lecture < hall[1]:
+        if teaching < hall[1]:
             big_enough_halls += 1
     prod1str += str(big_enough_halls * 20 - tracker) + ' * '
     prod1 *= big_enough_halls * 20 - tracker
@@ -95,24 +95,24 @@ for lecture in lectures:
     big_enough_halls = 0
 
 
-# upper bound to number of ways the students can be put into the WC and P groups
+# upper bound to number of ways the students can be put into the S and P groups
 prod2 = 1
 prod2str = ''
 for i in range(len(courses)-1):
     course = courses[i+1]
-    group_count = WCPGroups[i]
+    group_count = SPGroups[i]
     student_count = students_per_course[i]
-    WC = course[2]
-    P = course[4]
-    if WC > 0:
+    seminars = course[2]
+    practicals = course[4]
+    if seminars > 0:
         capacity = course[3]
     else:
         capacity = course[5]
     if group_count > 0:
-        prod2str += str((ncr(2 * student_count - 1 - group_count * capacity, group_count - 1))**(WC+P))
+        prod2str += str((ncr(2 * student_count - 1 - group_count * capacity, group_count - 1))**(seminars+practicals))
         if i != len(courses)-2:
             prod2str += ' * '
-        prod2 *= (ncr(2 * student_count - 1 - group_count * capacity, group_count - 1))**(WC+P)
+        prod2 *= (ncr(2 * student_count - 1 - group_count * capacity, group_count - 1))**(seminars+practicals)
 
 
 prodstr = prod1str + prod2str

@@ -13,7 +13,7 @@ class Course:
     """
 
     """
-    def __init__(self, data, students):
+    def __init__(self, data, students=[]):
         self.name = data[0]
         self.lectures = int(data[1])
         self.seminars = int(data[2])
@@ -29,9 +29,10 @@ class Course:
 """
 
 class Teaching:
-    def __init__(self, _type, course, students):
+    def __init__(self, _type, course, students=[]):
         self.courseName = course.name
         self.type = _type
+
         # studenten wisselen tussen teaching classes met dezelfde courseName en type
         if _type == "lecture":
             self.cap = len(students)
@@ -39,4 +40,8 @@ class Teaching:
             self.cap = course.s_cap
         else:
             self.cap = course.p_cap
-        self.students = students
+            
+        if not students:
+            self.students = course.students
+        else:
+            self.students = students
