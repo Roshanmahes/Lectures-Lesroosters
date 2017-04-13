@@ -13,37 +13,55 @@ def ncr(n, r):
     return numer//denom
 
 
+# number of ways to divide n identical items over g distinct groups under capacity c
+# https://math.stackexchange.com/a/941916
+# http://stackoverflow.com/a/5413198
+def groupings(n, g, c):
+    factor = [1]*(c+1)
+    li = factor
+    for _ in range(g - 1):
+        res = [0]*(len(li)+c)
+        for pos,val in enumerate(li):
+            for i in range(len(factor)):
+                res[pos+i] += val
+        li = res
+    return li[n]
+
+
 # read csv files and store in lists
 students = []
 courses = []
 halls = []
-with open('data/studentenenvakken.csv', 'r', encoding='utf-8') as f:
+with open("data/studentenenvakken.csv", "r", encoding="utf-8") as f:
     reader = csv.reader(f)
     students = list(reader)
-with open('data/vakken.csv', 'r', encoding='utf-8') as f:
+with open("data/vakken.csv", "r", encoding="utf-8") as f:
     reader = csv.reader(f)
     courses = list(reader)
-with open('data/zalen.csv', 'r', encoding='utf-8') as f:
+with open("data/zalen.csv", "r", encoding="utf-8") as f:
     reader = csv.reader(f)
     halls = list(reader)
+courses = courses[1:]
+halls = halls[1:]
+students = students[1:]
 
 
 # change strings of integers to actual integers
-for course in courses[1:]:
+for course in courses:
     course[1:] = list(map(int, course[1:]))
-for hall in halls[1:]:
-    hall[1:2] = list(map(int, hall[1:2]))
+for hall in halls:
+    hall[1:] = list(map(int, hall[1:]))
 
 
 # generate a list of the number of students enrolled in each course
 course_enrollments = []
-for course in courses[1:]:
+for course in courses:
     course_enrollments.append([course[0],0])
-for student in students[1:]:
+for student in students:
     for enrolled_course in student[3:]:
-        for course in courses[1:]:
+        for i,course in enumerate(courses):
             if enrolled_course == course[0]:
-                course_enrollments[courses.index(course) - 1][1] += 1
+                course_enrollments[i][1] += 1
 students_per_course = []
 for L in course_enrollments:
     students_per_course.append(L[1])
@@ -51,7 +69,7 @@ for L in course_enrollments:
 
 # generate a list of the amount of seminar and practical groups necessary per course
 SPGroups = []
-for course,student_count in zip(courses[1:],students_per_course):
+for course,student_count in zip(courses,students_per_course):
     if course[2] == 0 and course[4] == 0:
         SPGroups.append(0)
     else:
@@ -69,10 +87,10 @@ for course,student_count in zip(courses[1:],students_per_course):
 # makes use of the fact that any course with both seminar and practical teachings
 # will have equal capacities for both types
 teachings = []
-for i in range(len(courses)-1):
-    for _ in range(courses[i+1][1]):
+for i,course in enumerate(courses):
+    for _ in range(course[1]):
         teachings.append(students_per_course[i])
-    for _ in range(SPGroups[i]*(courses[i+1][2]+courses[i+1][4])):
+    for _ in range(SPGroups[i]*(course[2]+course[4])):
         if course[2] != 0:
             teachings.append(course[3])
         else:
@@ -80,52 +98,41 @@ for i in range(len(courses)-1):
 teachings.sort(reverse=True)
 
 
-# upper bound to number of ways the lectures can be scheduled
+# upper bound to number of ways the teachings can be scheduled
 prod1 = 1
-prod1str = ''
-big_enough_halls = 0
 tracker = 0
 for teaching in teachings:
-    for hall in halls[1:]:
+    big_enough_halls = 0
+    for hall in halls:
         if teaching < hall[1]:
             big_enough_halls += 1
-    prod1str += str(big_enough_halls * 20 - tracker) + ' * '
     prod1 *= big_enough_halls * 20 - tracker
     tracker += 1
-    big_enough_halls = 0
 
 
 # upper bound to number of ways the students can be put into the S and P groups
 prod2 = 1
-prod2str = ''
-for i in range(len(courses)-1):
-    course = courses[i+1]
+for i,course in enumerate(courses):
     group_count = SPGroups[i]
-    student_count = students_per_course[i]
-    seminars = course[2]
-    practicals = course[4]
-    if seminars > 0:
-        capacity = course[3]
-    else:
-        capacity = course[5]
     if group_count > 0:
-        prod2str += str((ncr(2 * student_count - 1 - group_count * capacity, group_count - 1))**(seminars+practicals))
-        if i != len(courses)-2:
-            prod2str += ' * '
-        prod2 *= (ncr(2 * student_count - 1 - group_count * capacity, group_count - 1))**(seminars+practicals)
+        student_count = students_per_course[i]
+        seminars = course[2]
+        practicals = course[4]
+        if seminars > 0:
+            capacity = course[3]
+        else:
+            capacity = course[5]
+        prod2 *= int(((groupings(student_count,group_count,capacity)*ncr(student_count,capacity))/factorial(group_count-1))**(seminars+practicals))
 
-
-prodstr = prod1str + prod2str
 prod = prod1*prod2
 
 
 # Print results
-print('Students per course')
-for enrollment in course_enrollments:
-    print(enrollment[0]+(' '*(38-len(enrollment[0]+str(enrollment[1]))))+str(enrollment[1]))
+print("Course"+" "*32+"Students")
+for enrollment,SP in zip(course_enrollments,SPGroups):
+    print(enrollment[0]+(" "*(46-len(enrollment[0]+str(enrollment[1]))))+str(enrollment[1]))
 print()
 print()
-print('Upper bound to configurations of the state space')
-#print(prodstr)
-#print(prod)
-print('{:.2E}'.format(prod))
+print("Upper bound to configurations of the state space")
+s = str(prod)
+print(s[0] + "." + s[1:3] + "e" + str(len(s)-1))

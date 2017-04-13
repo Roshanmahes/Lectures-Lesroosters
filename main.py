@@ -5,13 +5,13 @@ student_list = []
 course_list = []
 hall_list = []
 
-with open('data/studentenenvakken.csv', 'r', encoding='utf-8') as f:
+with open("data/studentenenvakken.csv", "r", encoding="utf-8") as f:
     reader = csv.reader(f)
     student_list = list(reader)
-with open('data/vakken.csv', 'r', encoding='utf-8') as f:
+with open("data/vakken.csv", "r", encoding="utf-8") as f:
     reader = csv.reader(f)
     course_list = list(reader)
-with open('data/zalen.csv', 'r', encoding='utf-8') as f:
+with open("data/zalen.csv", "r", encoding="utf-8") as f:
     reader = csv.reader(f)
     hall_list = list(reader)
 
