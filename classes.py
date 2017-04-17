@@ -9,9 +9,17 @@
         self.courses = courses
 """
 
+"""class TeachingHall:
+    def __init__(self, data):
+        self.name = data[0]
+        self.cap = int(data[1])
+"""
+
+
 class Course:
     """
-
+    Creates a course object containing course data and
+    a list of students following the course.
     """
     def __init__(self, data, students=[]):
         self.name = data[0]
@@ -22,25 +30,23 @@ class Course:
         self.p_cap = int(data[5])
         self.students = students
 
-"""class TeachingHall:
-    def __init__(self, data):
-        self.name = data[0]
-        self.cap = int(data[1])
-"""
 
 class Teaching:
+    """
+    Creates a teaching object containing the type of teaching,
+    course data and a list of students following the teaching.
+    """
     def __init__(self, _type, course, students=[]):
         self.courseName = course.name
         self.type = _type
 
-        # studenten wisselen tussen teaching classes met dezelfde courseName en type
         if _type == "lecture":
             self.cap = len(students)
         elif _type == "seminar":
             self.cap = course.s_cap
         else:
             self.cap = course.p_cap
-            
+
         if not students:
             self.students = course.students
         else:
