@@ -1,41 +1,33 @@
 import csv
 from classes import *
+from functions import *
 
-# initialise various lists
-student_list = []
-course_list = []
-hall_list = []
+TIMESLOTS = 20
+DATA_OFFSET = 3
 
-# fill lists with data from csv files
-with open("data/studentenenvakken.csv", "r", encoding="utf-8") as f:
-    reader = csv.reader(f)
-    student_list = list(reader)
-with open("data/vakken.csv", "r", encoding="utf-8") as f:
-    reader = csv.reader(f)
-    course_list = list(reader)
-with open("data/zalen.csv", "r", encoding="utf-8") as f:
-    reader = csv.reader(f)
-    hall_list = list(reader)
+# read data from files
 
-student_list = student_list[1:]
-course_list = course_list[1:]
-hall_list = hall_list[1:]
-
-# initiliase list of size 20x7
-schedule = [[0 for i in range(20)] for j in range(7)]
+# students.csv is in the format
+# last name, first name, id, courses
+student_list = read("data/students.csv")
+# courses.csv is in the format
+# name, lectures, seminars, seminar capacity, practicals, practical capacity
+course_list = read("data/courses.csv")
+# halls.csv is in the format
+# name, capacity
+hall_list = read("data/halls.csv")
 
 
-# create list of Course objects
-courses = []
-for course_data in course_list:
-    courses.append(Course(course_data, []))
+schedule = [[None for i in range(TIMESLOTS)] for j in range(len(hall_list))]
+courses = [Course(data) for data in course_list]
 
 # assign students to corresponding Course objects
-for student in student_list:
-    for courseName in student[3:]:
+for student_data in student_list:
+    for course_name in student_data[DATA_OFFSET:]:
         for course in courses:
-            if courseName == course.name:
+            if course_name == course.name:
                 course.students.append(student)
+                break
 
 # create list of Teaching objects
 teachings = []
@@ -57,7 +49,7 @@ for course in courses:
 
         # assign students to seminar groups (in alphabetical order)
         for i in range(seminar_count):
-            group = course.students[i*capacity:(i+1)*capacity-1]
+            group = course.students[i*capacity:(i+1)*capacity]
             teachings.append(Teaching("seminar", course, group))
 
     if course.practicals:
@@ -74,6 +66,3 @@ for course in courses:
         for i in range(practical_count):
             group = course.students[i*capacity:(i+1)*capacity]
             teachings.append(Teaching("practical", course, group))
-
-print(teachings[2].type)
-print(len(teachings[1].students))

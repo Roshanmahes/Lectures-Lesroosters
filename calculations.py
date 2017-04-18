@@ -2,6 +2,7 @@ from math import factorial
 from functools import reduce
 import operator
 import csv
+from functions import read
 
 
 # http://stackoverflow.com/a/4941932
@@ -31,21 +32,9 @@ def groupings(n, g, c):
 
 if __name__ == "__main__":
     # read csv files and store in lists
-    students = []
-    courses = []
-    halls = []
-    with open("data/studentenenvakken.csv", "r", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        students = list(reader)
-    with open("data/vakken.csv", "r", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        courses = list(reader)
-    with open("data/zalen.csv", "r", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        halls = list(reader)
-    courses = courses[1:]
-    halls = halls[1:]
-    students = students[1:]
+    students = read("data/students.csv")
+    courses = read("data/courses.csv")
+    halls = read("data/halls.csv")
 
 
     # change strings of integers to actual integers
