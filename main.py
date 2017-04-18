@@ -26,7 +26,7 @@ for student_data in student_list:
     for course_name in student_data[DATA_OFFSET:]:
         for course in courses:
             if course_name == course.name:
-                course.students.append(student)
+                course.students.append(student_data)
                 break
 
 # create list of Teaching objects
