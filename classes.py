@@ -21,7 +21,7 @@ class Course:
     Creates a course object containing course data and
     a list of students following the course.
     """
-    def __init__(self, data, students=[]):
+    def __init__(self, data, students):
         self.name = data[0]
         self.lectures = int(data[1])
         self.seminars = int(data[2])
@@ -30,15 +30,30 @@ class Course:
         self.p_cap = int(data[5])
         self.students = students
 
+    def get_group_count(self, _type):
+        """determine number of groups of type _type"""
+
+        student_count = len(self.students)
+        if _type == "seminar":
+            capacity = self.s_cap
+        else:
+            capacity = self.p_cap
+
+        if student_count % capacity > 0:
+            return student_count//capacity + 1
+        else:
+            return student_count//capacity
+
 
 class Teaching:
     """
     Creates a teaching object containing the type of teaching,
     course data and a list of students following the teaching.
     """
-    def __init__(self, _type, course, students=[]):
-        self.courseName = course.name
+    def __init__(self, _type, course, students):
+        self.course_name = course.name
         self.type = _type
+        self.students = students
 
         if _type == "lecture":
             self.cap = len(students)
@@ -46,8 +61,3 @@ class Teaching:
             self.cap = course.s_cap
         else:
             self.cap = course.p_cap
-
-        if not students:
-            self.students = course.students
-        else:
-            self.students = students
