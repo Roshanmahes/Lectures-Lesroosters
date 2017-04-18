@@ -1,21 +1,3 @@
-"""class Student:
-    def __init__(self, data):
-        self.name = data[1] + " " + data[0]
-        self.id = int(data[2])
-        courses = []
-        for str in data[3:]:
-            if str:
-                courses.append(str)
-        self.courses = courses
-"""
-
-"""class TeachingHall:
-    def __init__(self, data):
-        self.name = data[0]
-        self.cap = int(data[1])
-"""
-
-
 class Course:
     """
     Creates a course object containing course data and
@@ -31,7 +13,7 @@ class Course:
         self.students = students
 
     def get_group_count(self, _type):
-        """determine number of groups of type _type"""
+        """Determine number of groups of type _type."""
 
         student_count = len(self.students)
         if _type == "seminar":

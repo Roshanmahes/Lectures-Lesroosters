@@ -1,7 +1,7 @@
 def calculate(courses, teachings, hall_list):
     """
     Calculates an upper bound to the number
-    of configurations of the state space
+    of configurations of the state space.
     """
 
     # upper bound to number of ways the teachings can be scheduled
