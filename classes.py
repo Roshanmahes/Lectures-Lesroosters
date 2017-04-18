@@ -61,3 +61,6 @@ class Teaching:
             self.cap = course.s_cap
         else:
             self.cap = course.p_cap
+
+    def __str__(self):
+        return self.course_name + " - " + self.type
