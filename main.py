@@ -15,7 +15,7 @@ student_list = read("data/students.csv")
 course_list = read("data/courses.csv")
 # halls.csv is in the format
 # name, capacity
-hall_list = read("data/halls.csv")
+hall_list = read("data/halls.csv", sort=True)
 
 
 schedule = [[None for i in range(TIMESLOTS)] for j in range(len(hall_list))]
@@ -31,3 +31,15 @@ for student_data in student_list:
 
 # create list of Teaching objects
 teachings = create_teachings(courses)
+
+tracker = [0]*len(hall_list)
+for teaching in teachings:
+    for i,hall in enumerate(hall_list):
+        if len(teaching.students) <= hall[1]:
+            if tracker[i] < TIMESLOTS:
+                schedule[i][tracker[i]] = teaching
+                tracker[i] += 1
+                break
+
+for row in schedule:
+    print(row)

@@ -32,17 +32,16 @@ class Teaching:
     Creates a teaching object containing the type of teaching,
     course data and a list of students following the teaching.
     """
-    def __init__(self, _type, course, students):
+    def __init__(self, _type, course, students, group=""):
         self.course_name = course.name
         self.type = _type
         self.students = students
+        self.group = group
 
-        if _type == "lecture":
-            self.cap = len(students)
-        elif _type == "seminar":
-            self.cap = course.s_cap
-        else:
-            self.cap = course.p_cap
+    def __repr__(self):
 
-    def __str__(self):
-        return self.course_name + " - " + self.type
+        group_str = ""
+        if self.group:
+            group_str = " - Group " + self.group
+
+        return self.course_name + " - " + self.type + group_str
