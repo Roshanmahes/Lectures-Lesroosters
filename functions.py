@@ -3,7 +3,9 @@ from tabulate import tabulate
 from csv import *
 from classes import *
 
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+TIMESTRINGS = ["9-11", "11-13", "13-15", "15-17"]
 
 def read(path, sort=False, sort_column=1):
     """
@@ -40,19 +42,26 @@ def create_teachings(courses):
             # assign students to seminar groups (in alphabetical order)
             for i in range(course.get_group_count("seminar")):
                 group = course.students[i*course.s_cap:(i+1)*course.s_cap]
-                teachings.append(Teaching("seminar", course, group, alphabet[i]))
+                teachings.append(Teaching("seminar", course, group, ALPHABET[i]))
 
         if course.practicals:
             # assign students to practical groups (in alphabetical order)
             for i in range(course.get_group_count("practical")):
                 group = course.students[i*course.p_cap:(i+1)*course.p_cap]
-                teachings.append(Teaching("practical", course, group, alphabet[i]))
+                teachings.append(Teaching("practical", course, group, ALPHABET[i]))
 
     return teachings
 
 def print_schedule(hall_list, schedule):
     headers = [hall[0] for hall in hall_list]
-    schedule_transposed = []
-    for t in zip(*schedule):
-        schedule_transposed.append(list(t))
-    print(tabulate(schedule_transposed, headers))
+    headers.insert(0,"")
+    printable_schedule = []
+    for i,t in enumerate(zip(*schedule)):
+        if not i % 4:
+            day_row = [WEEKDAYS[i//4]]
+            day_row.extend([None]*7)
+            printable_schedule.append(day_row)
+        schedule_row = list(t)
+        schedule_row.insert(0, TIMESTRINGS[i % 4])
+        printable_schedule.append(schedule_row)
+    print(tabulate(printable_schedule, headers))
