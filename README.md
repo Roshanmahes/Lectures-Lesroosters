@@ -12,7 +12,7 @@ In onze case hebben we te maken met 609 studenten (zie [vakkenenstudenten.csv](h
 ### Vereisten
 Natuurlijk zou een opdracht als deze eenvoudig uit te werken zijn als er geen verdere vereisten waren. Net als in de praktijk ontbreken deze noodzakelijkheden niet. De volgende zaken zijn bij deze case van toepassing:
 
-  0. Alle 29 vakken moeten ingeroosterd worden.
+  0. Alle 29 vakken dienen ingeroosterd te worden.
   1. Vakken bestaan uit hoorcolleges en/of werkcolleges en/of practica.
   2. Alle zalen zijn voor alle drie collegetypes geschikt.
   3. Bij hoorcolleges moeten alle ingeschreven studenten ineens bedeeld worden.
