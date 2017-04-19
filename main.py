@@ -41,5 +41,4 @@ for teaching in teachings:
                 tracker[i] += 1
                 break
 
-for row in schedule:
-    print(row)
+print_schedule(hall_list, schedule)

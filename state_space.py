@@ -1,3 +1,5 @@
+TIMESLOTS = 20
+
 def calculate(courses, teachings, hall_list):
     """
     Calculates an upper bound to the number
@@ -14,7 +16,7 @@ def calculate(courses, teachings, hall_list):
         for hall in hall_list:
             if size < int(hall[1]):
                 big_enough_halls += 1
-        prod1 *= big_enough_halls * 20 - tracker
+        prod1 *= big_enough_halls * TIMESLOTS - tracker
         tracker += 1
 
     # upper bound to number of ways

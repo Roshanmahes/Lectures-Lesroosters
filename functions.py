@@ -1,4 +1,5 @@
 from operator import itemgetter
+from tabulate import tabulate
 from csv import *
 from classes import *
 
@@ -48,3 +49,10 @@ def create_teachings(courses):
                 teachings.append(Teaching("practical", course, group, alphabet[i]))
 
     return teachings
+
+def print_schedule(hall_list, schedule):
+    headers = [hall[0] for hall in hall_list]
+    schedule_transposed = []
+    for t in zip(*schedule):
+        schedule_transposed.append(list(t))
+    print(tabulate(schedule_transposed, headers))

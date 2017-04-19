@@ -23,10 +23,10 @@ Natuurlijk zou een opdracht als deze eenvoudig uit te werken zijn als er geen ve
 Er zijn nog steeds meerdere roosters te maken die aan bovenstaande vereisten voldoen. Een student wil niet alleen een rooster hebben, maar ook dat hij/zij zo veel mogelijk opsteekt bij de vakken. Daarom zijn er enkele bonus- en maluspunten te verdienen, wat een indicatie geeft van hoe goed het door ons gemaakte rooster is:
 
   * Een geldig weekrooster levert 1000 punten op.
-  
+
   Bonuspunten:
   * Studenten leren het meest als de activiteiten zoveel mogelijk verdeeld zijn over de week. Een vak van twee tot vier activiteiten die maximaal verdeeld zijn over de week levert 20 bonuspunten op. Voor twee activiteiten is dat ma-do of di-vr, voor drie activiteiten is dat ma-wo-vr en voor vier activiteiten is dat ma,di,do,vr.
-  
+
   Maluspunten:
   * Voor ieder vak van x activiteiten geldt dat ze 10 maluspunten opleveren als ze op x-1 dagen geroosterd zijn, 20 voor x-2 en 30 voor x-3.
   * Voor ieder zaalslot geldt dat er één maluspunt valt voor iedere ingeschreven student die er volgens de opgegeven zaalgroote niet meer in past.
@@ -38,5 +38,4 @@ Tot slot is er nog één escape optie, indien het maken van het rooster ons maar
   * De grootste zaal heeft ook een avondslot van 17:00-19:00, maar gebruik van het avondslot kost 50 maluspunten.
 
 ## Toestandsruimte
-(5)*(5)*(7)*(609/29)??
-?? 609 nCr 29
+To do.
