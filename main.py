@@ -2,8 +2,6 @@ import csv
 from classes import *
 from functions import *
 
-TIMESLOTS = 20
-DATA_OFFSET = 3
 
 # read data from files
 
@@ -18,27 +16,12 @@ course_list = read("data/courses.csv")
 hall_list = read("data/halls.csv", sort=True)
 
 
-schedule = [[None for i in range(TIMESLOTS)] for j in range(len(hall_list))]
-courses = [Course(data, []) for data in course_list]
-
-# assign students to corresponding Course objects
-for student_data in student_list:
-    for course_name in student_data[DATA_OFFSET:]:
-        for course in courses:
-            if course_name == course.name:
-                course.students.append(student_data)
-                break
+# create list of Course objects
+courses = create_course_list(course_list, student_list)
 
 # create list of Teaching objects
 teachings = create_teachings(courses)
 
-tracker = [0]*len(hall_list)
-for teaching in teachings:
-    for i,hall in enumerate(hall_list):
-        if len(teaching.students) <= hall[1]:
-            if tracker[i] < TIMESLOTS:
-                schedule[i][tracker[i]] = teaching
-                tracker[i] += 1
-                break
+schedule = create_schedule(teachings, hall_list)
 
 print_schedule(hall_list, schedule)
