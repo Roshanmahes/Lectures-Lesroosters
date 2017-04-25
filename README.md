@@ -38,4 +38,9 @@ Tot slot is er nog één escape optie, indien het maken van het rooster ons maar
   * De grootste zaal heeft ook een avondslot van 17:00-19:00, maar gebruik van het avondslot kost 50 maluspunten.
 
 ## Toestandsruimte
-To do.
+Het is zo eenvoudig nog niet om de grootte van de toestandsruimte te berekenen. Je moet namelijk zowel het aantal manieren waarop colleges in het rooster kunnen worden gezet, als het aantal manieren waarop de studenten kunnen worden ingeroosterd in alle werkcollege-, en practicumgroepen berekenen. Het eerste is relatief simpel. We bepalen het aantal slots M waarin colleges worden geroosterd en berekenen het aantal colleges n dat ingeroosterd moet worden en schrijven
+![]()
+voor het aantal manieren om colleges in te roosteren. De andere kant van het verhaal is lastiger. Voor het aantal manieren om studenten in groepen te zetten berekenen we dan ook niet de exacte waarde, maar een adequate bovengrens. Per vak nemen we de capaciteit van een college en het aantal studenten s dat het vak volgt en berekenen we per college van het aantal groepen g dat nodig om alle studenten in te roosteren. Dan is de waarde
+![]()
+een bovengrens voor het aantal manieren waarop studenten kunnen worden ingeroosterd. Vermenigvuldigen we de twee bovenstaande getallen nu met elkaar, dan vinden we de bovengrens
+![]()
