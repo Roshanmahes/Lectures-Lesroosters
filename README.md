@@ -43,12 +43,12 @@ Het is zo eenvoudig nog niet om de grootte van de toestandsruimte te berekenen. 
 <img src="https://raw.githubusercontent.com/Roshanmahes/Lectures-Lesroosters/master/README%20resources/latex1.png"/>
 </p>
 voor het aantal manieren om colleges in te roosteren. De andere kant van het verhaal is lastiger. Voor het aantal manieren om studenten in groepen te zetten berekenen we dan ook niet de exacte waarde, maar een adequate bovengrens. Per vak nemen we de capaciteit van een college en het aantal studenten s dat het vak volgt en berekenen we per college van het aantal groepen g dat nodig om alle studenten in te roosteren. Dan is de waarde
-→→
+  
 <p align="center">
 <img src="https://raw.githubusercontent.com/Roshanmahes/Lectures-Lesroosters/master/README%20resources/latex2.png"/>
 </p>
 een bovengrens voor het aantal manieren waarop studenten kunnen worden ingeroosterd. Vermenigvuldigen we de twee bovenstaande getallen nu met elkaar, dan vinden we de bovengrens
-→→
+  
 <p align="center">
 <img src="https://raw.githubusercontent.com/Roshanmahes/Lectures-Lesroosters/master/README%20resources/latex3.png"/>
 </p>
