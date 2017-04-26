@@ -1,11 +1,12 @@
+import classes
+import csv
 from operator import itemgetter
 from tabulate import tabulate
-from csv import *
-from classes import *
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 TIMESTRINGS = ["9-11", "11-13", "13-15", "15-17"]
+PERIODS = len(TIMESTRINGS)
 DATA_OFFSET = 3
 TIMESLOTS = 20
 
@@ -15,7 +16,7 @@ def read(path, sort=False, sort_column=1):
     if it contains no digits (if it is a header).
     """
     with open(path, "r", encoding="utf-8") as f:
-        result = list(reader(f))
+        result = list(csv.reader(f))
 
     # strip the first row if it is a header
     if not any(item.isdigit() for item in result[0]):
@@ -30,10 +31,10 @@ def read(path, sort=False, sort_column=1):
 
 def create_course_list(course_list, student_list):
     """
-    Creates a list of Course objects, each
+    Returns a list of Course objects, each
     containing students following the course.
     """
-    courses = [Course(data, []) for data in course_list]
+    courses = [classes.Course(data, []) for data in course_list]
 
     # assign students to corresponding Course objects
     for student_data in student_list:
@@ -47,7 +48,7 @@ def create_course_list(course_list, student_list):
 
 def create_teachings(courses):
     """
-    Creates a list of teachings corresponding to
+    Returns a list of teachings corresponding to
     the Course object list courses.
     """
     teachings = []
@@ -55,19 +56,19 @@ def create_teachings(courses):
     for course in courses:
         for _ in range(course.lectures):
             # assign students to lecture
-            teachings.append(Teaching("lecture", course, course.students))
+            teachings.append(classes.Teaching("lecture", course, course.students))
 
         if course.seminars:
             # assign students to seminar groups (in alphabetical order)
             for i in range(course.get_group_count("seminar")):
-                group = course.students[i*course.s_cap:(i+1)*course.s_cap]
-                teachings.append(Teaching("seminar", course, group, ALPHABET[i]))
+                group = course.students[i * course.s_cap:(i+1) * course.s_cap]
+                teachings.append(classes.Teaching("seminar", course, group, ALPHABET[i]))
 
         if course.practicals:
             # assign students to practical groups (in alphabetical order)
             for i in range(course.get_group_count("practical")):
-                group = course.students[i*course.p_cap:(i+1)*course.p_cap]
-                teachings.append(Teaching("practical", course, group, ALPHABET[i]))
+                group = course.students[i * course.p_cap:(i+1) * course.p_cap]
+                teachings.append(classes.Teaching("practical", course, group, ALPHABET[i]))
 
     return teachings
 
@@ -75,10 +76,11 @@ def create_schedule(teachings, hall_list):
     """
     Creates a schedule, filling all halls from hall_list with
     teachings from teachings.
+    Returns a list of lists containing Teaching objects.
     """
     schedule = [[None for i in range(TIMESLOTS)] for j in range(len(hall_list))]
 
-    tracker = [0]*len(hall_list)
+    tracker = [0] * len(hall_list)
     for teaching in teachings:
         for i,hall in enumerate(hall_list):
             if len(teaching.students) <= hall[1]:
@@ -89,7 +91,6 @@ def create_schedule(teachings, hall_list):
 
     return schedule
 
-
 def print_schedule(hall_list, schedule):
     """
     Prints a table containing a schedule with lists from hall_list.
@@ -99,13 +100,13 @@ def print_schedule(hall_list, schedule):
     printable_schedule = []
 
     for i,t in enumerate(zip(*schedule)):
-        if not i % 4:
-            day_row = [WEEKDAYS[i//4]]
-            day_row.extend([None]*7)
+        if not i % PERIODS:
+            day_row = [WEEKDAYS[i // PERIODS]]
+            day_row.extend([None] * len(hall_list))
             printable_schedule.append(day_row)
-            
+
         schedule_row = list(t)
-        schedule_row.insert(0, TIMESTRINGS[i%4])
+        schedule_row.insert(0, TIMESTRINGS[i % PERIODS])
         printable_schedule.append(schedule_row)
 
     print(tabulate(printable_schedule, headers))

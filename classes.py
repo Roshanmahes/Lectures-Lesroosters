@@ -2,6 +2,8 @@ class Course:
     """
     Creates a course object containing course data and
     a list of students following the course.
+    The course data is in the following format:
+    [name, lectures, seminars, seminar capacity, practicals, practical capacity]
     """
     def __init__(self, data, students):
         self.name = data[0]

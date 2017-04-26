@@ -1,1 +1,5 @@
+# This file specifies which libraries will need to be installed
+# in order for the program to run successfully.
+
+# version used: tabulate 0.7.7
 tabulate
