@@ -1,5 +1,6 @@
 # This file specifies which libraries will need to be installed
 # in order for the program to run successfully.
+# Execute "pip install requirements.txt" in a command prompt
+# to download all required libraries.
 
-# version used: tabulate 0.7.7
-tabulate
+tabulate==0.7.7
