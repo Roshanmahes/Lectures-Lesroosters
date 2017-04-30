@@ -1,25 +1,38 @@
+import classes
 from functions import *
+from score import *
 
+def  main():
+    """
+    Executes main.py.
+    """
 
-# read data from files
+    # read data from files
+    # students.csv is in the following format:
+    # last name, first name, id, courses
+    student_list = read("data/students.csv")
+    # courses.csv is in the following format:
+    # name, lectures, seminars, seminar capacity, practicals, practical capacity
+    course_list = read("data/courses.csv")
+    # halls.csv is in the following format:
+    # name, capacity
+    hall_list = read("data/halls.csv", sort=True)
 
-# students.csv is in the following format:
-# last name, first name, id, courses
-student_list = read("data/students.csv")
-# courses.csv is in the following format:
-# name, lectures, seminars, seminar capacity, practicals, practical capacity
-course_list = read("data/courses.csv")
-# halls.csv is in the following format:
-# name, capacity
-hall_list = read("data/halls.csv", sort=True)
+    student_objects = [classes.Student(data) for data in student_list]
+    hall_objects = [classes.Teaching_Hall(data) for data in hall_list]
 
+    # create list of Course objects
+    courses = create_course_list(course_list, student_objects)
 
-# create list of Course objects
-courses = create_course_list(course_list, student_list)
+    # create list of Teaching objects
+    teachings = create_teachings(courses)
 
-# create list of Teaching objects
-teachings = create_teachings(courses)
+    schedule = create_schedule(teachings, hall_objects)
 
-schedule = create_schedule(teachings, hall_list)
+    print_schedule(hall_objects, schedule)
 
-print_schedule(hall_list, schedule)
+    # determine score of schedule
+    print(score(schedule))
+
+if __name__ == "__main__":
+    main()
