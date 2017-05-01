@@ -82,13 +82,22 @@ def create_schedule(teachings, hall_list):
     teachings from teachings.
     Returns a list of lists containing Teaching objects.
     """
+    # create an empty schedule of the right dimensions
     schedule = [[None for i in range(TIMESLOTS)] for j in range(len(hall_list))]
 
+    # keep track of how many timeslots have been filled for each hall
     tracker = [0] * len(hall_list)
+
     for teaching in teachings:
         for i,hall in enumerate(hall_list):
+
+            # if the amount of students fits into the hall
             if len(teaching.students) <= hall.capacity:
+
+                # if less than all slots have been filled
                 if tracker[i] < TIMESLOTS:
+
+                    # insert the teaching into the schedule
                     schedule[i][tracker[i]] = teaching
 
                     # add hall and timeslot to teaching object
@@ -103,18 +112,26 @@ def print_schedule(hall_list, schedule):
     """
     Prints a table containing a schedule with lists from hall_list.
     """
+    # the headers of the table are the hall names
     headers = [hall.name for hall in hall_list]
     headers.insert(0,"")
+
+    # initialize a list that will be in the format accepted by tabulate
     printable_schedule = []
 
     for i,t in enumerate(zip(*schedule)):
+        # insert weekday dividers
         if not i % PERIODS:
             day_row = [WEEKDAYS[i // PERIODS]]
             day_row.extend([None] * len(hall_list))
             printable_schedule.append(day_row)
 
+        # transpose a schedule column to be a row
         schedule_row = list(t)
+
+        # add the corresponding time to the row
         schedule_row.insert(0, TIMESTRINGS[i % PERIODS])
+
         printable_schedule.append(schedule_row)
 
     print(tabulate(printable_schedule, headers))
