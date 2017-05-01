@@ -32,7 +32,7 @@ def  main():
     print_schedule(hall_objects, schedule)
 
     # determine score of schedule
-    print("\nScore:", score(schedule))
+    print("\nScore:", score(schedule, courses))
 
 if __name__ == "__main__":
     main()

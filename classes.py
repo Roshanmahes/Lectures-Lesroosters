@@ -29,6 +29,10 @@ class Course:
         else:
             return student_count//capacity
 
+    def get_activity_count(self):
+        """Determine amount of activities of the course."""
+        return self.lectures + self.seminars + self.practicals
+
 class Student:
     """
     Creates a student object containing student info and a list
@@ -47,14 +51,20 @@ class Student:
 class Teaching:
     """
     Creates a teaching object containing the type of teaching,
-    course data and a list of students following the teaching.
+    course data, a list of students following the teaching,
+    the hall and the timeslot.
     """
-    def __init__(self, _type, course, students, group="", hall=None):
+    # declare static variables
+    #lecture_count, seminar_count, practical_count = 0, 0, 0
+
+    def __init__(self, _type, course, students, group="",
+        hall=None, timeslot=0):
         self.course_name = course.name
         self.type = _type
         self.students = students
         self.group = group
         self.hall = hall
+        self.timeslot = timeslot
 
     def __repr__(self):
         group_str = ""

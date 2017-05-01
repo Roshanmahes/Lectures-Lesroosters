@@ -91,8 +91,9 @@ def create_schedule(teachings, hall_list):
                 if tracker[i] < TIMESLOTS:
                     schedule[i][tracker[i]] = teaching
 
-                    # add hall to teaching object
+                    # add hall and timeslot to teaching object
                     teaching.hall = hall_list[i]
+                    teaching.timeslot = tracker[i]
                     tracker[i] += 1
                     break
 
