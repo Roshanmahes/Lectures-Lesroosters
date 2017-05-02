@@ -43,7 +43,7 @@ def score(schedule, courses):
             if count > 1:
                 score -= count - 1
 
-    # create a list of teachings sorted by time for each course
+    # create a list of teachings sorted by timeslot for each course
     sorted_teachings = []
     for course in courses:
         course_teachings = []
@@ -52,12 +52,12 @@ def score(schedule, courses):
                 course_teachings.append(teaching)
         sorted_teachings.append(course_teachings)
 
-    # initialize list of activity distributions that will be needed to
+    # initialise list of activity distributions that will be needed to
     # calculate bonus points
     activity_distributions = []
 
     for _,course_teachings in enumerate(sorted_teachings):
-        # initialize variables
+        # initialise variables
 
         # turns false if malus points are applied
         so_far_so_good = True
@@ -67,8 +67,8 @@ def score(schedule, courses):
 
         current_day = None
 
-        # turn true if another seminar (resp. practical) group has been checked
-        # for this day already
+        # turn true if another seminar (resp. practical) group has been
+        # checked for this day already
         seminar_had = False
         practical_had = False
 
@@ -77,8 +77,8 @@ def score(schedule, courses):
             successor = course_teachings[i+1]
 
             # day on which teaching (resp. its successor) takes place
-            teaching_day = teaching.timeslot//4
-            successor_day = successor.timeslot//4
+            teaching_day = teaching.timeslot // 4
+            successor_day = successor.timeslot // 4
 
             # reset daily variables if new day is reached
             if teaching_day != current_day:
@@ -95,10 +95,11 @@ def score(schedule, courses):
             if teaching.type != successor.type or teaching.type == "lecture":
                 if delta:
                     # keep track of distances between teachings
-                    activity_distribution += str(teaching_day) + str(successor_day) + "-"
+                    activity_distribution += str(teaching_day) + \
+                        str(successor_day) + "-"
 
-                # if another group of the same activity on the same day hasn't
-                # been checked already
+                # if another group of the same activity on the same day
+                # hasn't been checked already
                 elif (successor.type != "seminar" or not seminar_had) and \
                         (successor.type != "practical" or not practical_had):
                     so_far_so_good = False
@@ -110,7 +111,8 @@ def score(schedule, courses):
 
         if so_far_so_good:
             if len(activity_distribution) > 0:
-                activity_distributions.append(str(_)+" "+activity_distribution[:-1])
+                activity_distributions.append(str(_) + \
+                    " " + activity_distribution[:-1])
 
     for distribution in activity_distributions:
         if distribution in optimal_configurations:
