@@ -1,6 +1,5 @@
-# This file specifies which libraries will need to be installed
-# in order for the program to run successfully.
-# Execute "pip install requirements.txt" in a command prompt
-# to download all required libraries.
+# This file specifies which packages are required in order to run the
+# program successfully.
+# To install them, paste 'pip install requirements.txt' into your terminal.
 
 tabulate==0.7.7
