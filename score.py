@@ -36,7 +36,7 @@ def capacity_points(schedule_flat, malus=1):
 
     for teaching in schedule_flat:
         if len(teaching.students) > teaching.hall.capacity:
-            points -= len(teaching.students) - teaching.hall.capacity
+            points -= malus * (len(teaching.students) - teaching.hall.capacity)
 
     return points
 
@@ -66,7 +66,7 @@ def conflict_points(schedule, malus=1):
         # subtract points if a student has multiple teachings at once
         for student, count in counter.items():
             if count > 1:
-                points -= count - 1
+                points -= malus * (count - 1)
 
     return points
 

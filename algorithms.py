@@ -1,4 +1,5 @@
 import classes
+import random
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 TIMESLOTS = 20
@@ -55,5 +56,60 @@ def alphabetical(courses, halls):
                     teaching.timeslot = tracker[i]
                     tracker[i] += 1
                     break
+
+    return schedule
+
+def random_walk(courses, halls):
+    """
+
+    """
+    teachings = []
+
+    for course in courses:
+        for _ in range(course.lectures):
+            # assign students to lecture
+            teachings.append(classes.Teaching("lecture",
+                    course, course.students))
+
+        if course.seminars:
+            group_count = course.get_group_count("seminar")
+            students_per_group = [0] * group_count
+
+            seminars = [classes.Teaching("seminar", course, [], ALPHABET[i]) for i in range(group_count)]
+
+            for student in course.students:
+                rand = random.randint(0, group_count - 1)
+                while students_per_group[rand] == course.s_cap:
+                    rand = random.randint(0, group_count - 1)
+                seminars[rand].students.append(student)
+                students_per_group[rand] += 1
+
+            for seminar in seminars:
+                teachings.append(seminar)
+
+        if course.practicals:
+            group_count = course.get_group_count("practical")
+            students_per_group = [0] * group_count
+
+            practicals = [classes.Teaching("practical", course, [], ALPHABET[i]) for i in range(group_count)]
+
+            for student in course.students:
+                rand = random.randint(0, group_count - 1)
+                while students_per_group[rand] == course.p_cap:
+                    rand = random.randint(0, group_count - 1)
+                practicals[rand].students.append(student)
+                students_per_group[rand] += 1
+
+            for practical in practicals:
+                teachings.append(practical)
+
+    # create an empty schedule of the right dimensions
+    schedule = [[None for i in range(TIMESLOTS)] for j in range(len(halls))]
+    entries = list(range(TIMESLOTS * len(halls)))
+    for teaching in teachings:
+        rand = entries[random.randint(0, len(entries) - 1)]
+        teaching.hall = halls[rand // 20]
+        schedule[rand // 20][rand % 20] = teaching
+        entries.remove(rand)
 
     return schedule

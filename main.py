@@ -26,12 +26,24 @@ def  main():
     courses = create_course_list(course_list, students)
 
     # create a simple schedule
-    schedule = algorithms.alphabetical(courses, halls)
+    score_list = []
+    best_score = -300
+    worst_score = -300
+    for _ in range(1000):
+        schedule = algorithms.random_walk(courses, halls)
+        points = score(schedule, courses)
+        score_list.append(points)
+        if points >= best_score:
+            best_score = points
+            best_schedule = schedule
+        elif points < worst_score:
+            worst_score = points
+            worst_schedule = schedule
 
-    print_schedule(halls, schedule)
-
-    # determine score of schedule
-    print("\nScore:", score(schedule, courses))
+    print(best_score, worst_score)
+    print_schedule(halls, best_schedule)
+    print_schedule( halls, worst_schedule)
+    print(score_list[:30])
 
 if __name__ == "__main__":
     main()
