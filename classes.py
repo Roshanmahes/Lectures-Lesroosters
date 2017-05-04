@@ -54,9 +54,6 @@ class Teaching:
     course data, a list of students following the teaching,
     the hall and the timeslot.
     """
-    # declare static variables
-    #lecture_count, seminar_count, practical_count = 0, 0, 0
-
     def __init__(self, _type, course, students, group="",
         hall=None, timeslot=0):
         self.course_name = course.name
@@ -73,7 +70,7 @@ class Teaching:
 
         return self.course_name + " - " + self.type + group_str
 
-class Teaching_Hall:
+class TeachingHall:
     """
     Creates a teaching hall object containing hall data.
     The data is in the following format: [name, capacity].

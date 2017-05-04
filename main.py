@@ -1,4 +1,5 @@
 import classes
+import algorithms
 from functions import *
 from score import *
 
@@ -18,18 +19,16 @@ def  main():
     # name, capacity
     hall_list = read("data/halls.csv", sort=True)
 
-    student_objects = [classes.Student(data) for data in student_list]
-    hall_objects = [classes.Teaching_Hall(data) for data in hall_list]
+    students = [classes.Student(data) for data in student_list]
+    halls = [classes.TeachingHall(data) for data in hall_list]
 
     # create list of Course objects
-    courses = create_course_list(course_list, student_objects)
+    courses = create_course_list(course_list, students)
 
-    # create list of Teaching objects
-    teachings = create_teachings(courses)
+    # create a simple schedule
+    schedule = algorithms.alphabetical(courses, halls)
 
-    schedule = create_schedule(teachings, hall_objects)
-
-    print_schedule(hall_objects, schedule)
+    print_schedule(halls, schedule)
 
     # determine score of schedule
     print("\nScore:", score(schedule, courses))
