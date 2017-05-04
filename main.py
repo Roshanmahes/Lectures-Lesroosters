@@ -29,7 +29,7 @@ def  main():
     score_list = []
     best_score = -300
     worst_score = -300
-    for _ in range(1000):
+    for _ in range(1000000):
         schedule = algorithms.random_walk(courses, halls)
         points = score(schedule, courses)
         score_list.append(points)
@@ -43,7 +43,7 @@ def  main():
     print(best_score, worst_score)
     print_schedule(halls, best_schedule)
     print_schedule( halls, worst_schedule)
-    print(score_list[:30])
+    print(score_list)
 
 if __name__ == "__main__":
     main()
