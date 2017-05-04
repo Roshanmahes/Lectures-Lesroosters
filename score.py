@@ -1,7 +1,9 @@
 import collections
 from operator import itemgetter
 
-optimal_configurations = {"03","14","02-24","01-13-34"}
+# configurations eligible for bonus points
+OPTIMAL_CONFIGURATIONS = {"03","14","02-24","01-13-34"}
+PERIODS = 4
 
 def score(schedule, courses):
     """
@@ -11,16 +13,39 @@ def score(schedule, courses):
     score = 1000
 
     # flatten schedule in such a way that the teachings are sorted by timeslot
+    # schedule is a list of lists, where each list contains
+    # teachings scheduled at a certain hall
     schedule_flat = [teaching for timeslot in zip(*schedule)
         for teaching in timeslot]
 
     # remove all empty teachings
     schedule_flat = [teaching for teaching in schedule_flat if teaching]
 
+    # calculate bonus and malus points
+    score += capacity_points(schedule_flat) + conflict_points(schedule) \
+        + configuration_points(schedule_flat, courses)
+
+    return score
+
+def capacity_points(schedule_flat, malus=1):
+    """
+    Compute malus points, deducting points if the number of students
+    in a teaching exceeds the capacity.
+    """
+    points = 0
+
     for teaching in schedule_flat:
-        # check if the number of students in a teaching exceeds the capacity
         if len(teaching.students) > teaching.hall.capacity:
-            score -= len(teaching.students) - teaching.hall.capacity
+            points -= len(teaching.students) - teaching.hall.capacity
+
+    return points
+
+def conflict_points(schedule, malus=1):
+    """
+    Compute malus points, deducting points if a student
+    has multiple teachings at once.
+    """
+    points = 0
 
     for timeslot in zip(*schedule):
         # list of students following a teaching at timeslot
@@ -41,7 +66,19 @@ def score(schedule, courses):
         # subtract points if a student has multiple teachings at once
         for student, count in counter.items():
             if count > 1:
-                score -= count - 1
+                points -= count - 1
+
+    return points
+
+def configuration_points(schedule_flat, courses, malus=10, bonus=20):
+    """
+    Compute bonus and malus points corresponding to the
+    quality of the distribution of each course over the week.
+    Points are deducted if there are multiple teachings
+    of the same course on the same day.
+    Points are added if the teachings are optimally distributed.
+    """
+    points = 0
 
     # create a list of teachings sorted by timeslot for each course
     sorted_teachings = []
@@ -56,7 +93,7 @@ def score(schedule, courses):
     # calculate bonus points
     activity_distributions = []
 
-    for _,course_teachings in enumerate(sorted_teachings):
+    for course_teachings in sorted_teachings:
         # initialise variables
 
         # turns false if malus points are applied
@@ -77,8 +114,8 @@ def score(schedule, courses):
             successor = course_teachings[i+1]
 
             # day on which teaching (resp. its successor) takes place
-            teaching_day = teaching.timeslot // 4
-            successor_day = successor.timeslot // 4
+            teaching_day = teaching.timeslot // PERIODS
+            successor_day = successor.timeslot // PERIODS
 
             # reset daily variables if new day is reached
             if teaching_day != current_day:
@@ -103,7 +140,7 @@ def score(schedule, courses):
                 elif (successor.type != "seminar" or not seminar_had) and \
                         (successor.type != "practical" or not practical_had):
                     so_far_so_good = False
-                    score -= 10
+                    points -= malus
                     if teaching.type == "seminar":
                         seminar_had = True
                     elif teaching.type == "practical":
@@ -111,11 +148,10 @@ def score(schedule, courses):
 
         if so_far_so_good:
             if len(activity_distribution) > 0:
-                activity_distributions.append(str(_) + \
-                    " " + activity_distribution[:-1])
+                activity_distributions.append(activity_distribution[:-1])
 
     for distribution in activity_distributions:
-        if distribution in optimal_configurations:
-            score += 20
+        if distribution in OPTIMAL_CONFIGURATIONS:
+            points += bonus
 
-    return score
+    return points
