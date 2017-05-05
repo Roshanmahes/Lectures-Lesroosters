@@ -1,0 +1,8 @@
+Beste score: 25
+Slechtste score: -920
+Mediaan: -392
+Gemiddelde: -392.5113
+#Positieve scores: 3
+#Negatieve scores: 9999997
+SD: 85.94662
+Variantie: 7386.822
