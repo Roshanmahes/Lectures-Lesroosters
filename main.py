@@ -1,5 +1,6 @@
 import classes
 import algorithms
+import csv
 from functions import *
 from score import *
 
@@ -25,25 +26,19 @@ def  main():
     # create list of Course objects
     courses = create_course_list(course_list, students)
 
-    # create a simple schedule
-    score_list = []
-    best_score = -300
-    worst_score = -300
-    for _ in range(1000000):
-        schedule = algorithms.random_walk(courses, halls)
-        points = score(schedule, courses)
-        score_list.append(points)
-        if points >= best_score:
-            best_score = points
-            best_schedule = schedule
-        elif points < worst_score:
-            worst_score = points
-            worst_schedule = schedule
+    # show some facts about the random_scores.csv file which contains the
+    # scores of 10 million randomly generated schedules
+    scores = []
+    with open("data/random_scores.csv") as f:
+        reader = csv.reader(f)
+        for score in next(reader):
+            if score:
+                scores.append(int(score))
+    scores.sort()
+    print(scores[:10])
+    print(scores[-10:])
+    print(sum(scores)/len(scores))
 
-    print(best_score, worst_score)
-    print_schedule(halls, best_schedule)
-    print_schedule( halls, worst_schedule)
-    print(score_list)
 
 if __name__ == "__main__":
     main()
