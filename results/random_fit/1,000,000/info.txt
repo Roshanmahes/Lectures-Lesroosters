@@ -1,0 +1,9 @@
+Rekentijd: 4528.858 seconden
+Beste score: 529
+Slechtste score: -27
+Mediaan: 283
+Gemiddelde: 281.3778
+#Positieve scores: 999989
+#Negatieve scores: 10
+SD: 60.42935
+Variantie: 3651.706
