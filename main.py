@@ -1,10 +1,11 @@
 import classes
 import algorithms
+import greedy
 import csv
 from functions import *
 from score import *
 
-def  main():
+def main():
     """
     Executes main.py.
     """
@@ -31,9 +32,9 @@ def  main():
     #score_list = []
     #best_score = 0
     #worst_score = 1000
-    #for _ in range(1000000):
-    schedule = algorithms.alphabetical(courses, halls)
-    points = score(schedule, courses)
+    for _ in range(100000):
+        schedule = algorithms.random_walk(courses, halls)
+        score(schedule, courses)
     #    score_list.append(points)
     #    if points >= best_score:
     #        best_score = points
@@ -41,6 +42,8 @@ def  main():
     #    elif points < worst_score:
     #        worst_score = points
     #        worst_schedule = schedule
+
+    #greedy.random_spread(courses, halls)
 
 if __name__ == "__main__":
     main()

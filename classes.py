@@ -14,6 +14,7 @@ class Course:
         self.practicals = int(data[4])
         self.p_cap = int(data[5])
         self.students = students
+        self.activity_count = self.lectures + self.seminars + self.practicals
 
     def get_group_count(self, _type):
         """Determine number of groups of type _type."""
@@ -31,7 +32,7 @@ class Course:
 
     def get_activity_count(self):
         """Determine amount of activities of the course."""
-        return self.lectures + self.seminars + self.practicals
+        return self.lectures + self.seminars + self.practicals # moet nog naar __init__
 
 class Student:
     """
