@@ -22,11 +22,10 @@ def score(schedule, courses):
     schedule_flat = [teaching for teaching in schedule_flat if teaching]
 
     # calculate bonus and malus points
-    #score += capacity_points(schedule_flat) + conflict_points(schedule) \
-    #    + configuration_points(schedule_flat, courses)
+    score += capacity_points(schedule_flat) + conflict_points(schedule) \
+        + configuration_points(schedule_flat, courses)
 
-    #return score
-    print(capacity_points(schedule_flat)," ", conflict_points(schedule), " ", configuration_points(schedule_flat,courses))
+    return score
 
 def capacity_points(schedule_flat, malus=1):
     """
@@ -86,7 +85,7 @@ def configuration_points(schedule_flat, courses, malus=10, bonus=20):
     for course in courses:
         course_teachings = []
         for teaching in schedule_flat:
-            if teaching.course_name == course.name:
+            if teaching.course.name == course.name:
                 course_teachings.append(teaching)
         sorted_teachings.append(course_teachings)
 

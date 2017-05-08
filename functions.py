@@ -36,11 +36,11 @@ def create_course_list(course_list, student_list):
     courses = [classes.Course(data, []) for data in course_list]
 
     # assign students to corresponding Course objects
-    for student_object in student_list:
-        for course_name in student_object.courses:
+    for student in student_list:
+        for course_name in student.courses:
             for course in courses:
                 if course_name == course.name:
-                    course.students.append(student_object)
+                    course.students.append(student)
                     break
 
     return courses

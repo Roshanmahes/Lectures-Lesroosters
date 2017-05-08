@@ -16,7 +16,7 @@ CONFIG_FIVE = [0,1,2,3,4]
 def random_spread(courses, halls):
 
     number_of_activities = []
-    sorted_courses = [[],[],[],[],[]] # [[]] * MAX_ACTIVITIES werkt niet?
+    sorted_courses = [[] for _ in range(MAX_ACTIVITIES)] # [[]] * MAX_ACTIVITIES werkt niet?
     teachings = []
     seminar_groups = []
     practical_groups = []

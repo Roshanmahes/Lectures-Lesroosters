@@ -30,10 +30,6 @@ class Course:
         else:
             return student_count//capacity
 
-    def get_activity_count(self):
-        """Determine amount of activities of the course."""
-        return self.lectures + self.seminars + self.practicals # moet nog naar __init__
-
 class Student:
     """
     Creates a student object containing student info and a list
@@ -57,7 +53,7 @@ class Teaching:
     """
     def __init__(self, _type, course, students, group="",
         hall=None, timeslot=0):
-        self.course_name = course.name
+        self.course = course
         self.type = _type
         self.students = students
         self.group = group
@@ -69,7 +65,7 @@ class Teaching:
         if self.group:
             group_str = " - Group " + self.group
 
-        return self.course_name + " - " + self.type + group_str
+        return self.course.name + " - " + self.type + group_str
 
 class TeachingHall:
     """
