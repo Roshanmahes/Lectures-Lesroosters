@@ -33,6 +33,7 @@ def main():
     #score_list = []
     #best_score = 0
     #worst_score = 1000
+    schedule = [[] for _ in range(500)]
 
     #    score_list.append(points)
     #    if points >= best_score:
@@ -41,10 +42,20 @@ def main():
     #    elif points < worst_score:
     #        worst_score = points
     #        worst_schedule = schedule
+    i = 1
+    schedule[1] = algorithms.random_fit(courses,halls)
+    print(schedule[1])
 
-    schedule = algorithms.random_walk(courses,halls)
-    print_schedule(halls, schedule)
-    print_schedule(halls, hill_climb.teaching_swap(schedule, courses, halls))
+    schedule[2] = hill_climb.student_swap(schedule, courses, halls)
+    print(schedule[2])
+    #print_schedule(halls, schedule)
+    #print_schedule(halls, hill_climb.teaching_swap(schedule, courses, halls))
+
+    while True: #score(schedule[i], courses) <= score(schedule[i+1],courses):
+        schedule[i+1] = hill_climb.teaching_swap(schedule[i], courses, halls)
+        print_schedule(halls, schedule[i+1])
+        print("i:",i)
+        i += 1
 
 if __name__ == "__main__":
     main()

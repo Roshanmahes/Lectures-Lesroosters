@@ -1,6 +1,6 @@
 import classes
 from score import *
-
+import random
 
 def hill_climb(courses,halls):
     """
@@ -61,7 +61,7 @@ def student_swap(schedule, courses, halls):
                         seminar2.students.append(student1)
 
                         # compute new score
-                        new_score = 
+                        #new_score =
 
 
 
@@ -80,6 +80,7 @@ def teaching_swap(schedule, courses, halls):
     # are in the same list
     best_schedule = list(map(list, zip(*schedule)))
     best_score = score(schedule, courses)
+    same_schedules = []
     print("Old score:", best_score)
 
     # check all possible swaps of teachings
@@ -94,8 +95,15 @@ def teaching_swap(schedule, courses, halls):
 
                 # compute new score
                 new_score = score(list(map(list, zip(*new_schedule))), courses)
-                if new_score > best_score:
+                if new_score >= best_score:
+                    # we don't have schedules with same score anymore
+                    same_schedules = []
                     best_schedule, best_score = new_schedule, new_score
+                elif new_score == best_score:
+                    same_schedules.append(new_schedule)
+
+                    # choose randomly between the schedules
+                    best_schedule = random.choice(same_schedules)
 
     print("New score:", best_score)
 
