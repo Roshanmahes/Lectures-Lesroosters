@@ -21,8 +21,12 @@ class Course:
 
         student_count = len(self.students)
         if _type == "seminar":
+            if not self.seminars:
+                return 0
             capacity = self.s_cap
         else:
+            if not self.practicals:
+                return 0
             capacity = self.p_cap
 
         if student_count % capacity > 0:

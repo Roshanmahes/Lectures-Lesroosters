@@ -42,6 +42,7 @@ def main():
     #    elif points < worst_score:
     #        worst_score = points
     #        worst_schedule = schedule
+<<<<<<< HEAD
     i = 1
     schedule[1] = algorithms.random_fit(courses,halls)
     print(schedule[1])
@@ -56,6 +57,13 @@ def main():
         print_schedule(halls, schedule[i+1])
         print("i:",i)
         i += 1
+=======
+
+    schedule = algorithms.random_walk(courses,halls)
+    print("Old:", score(schedule, courses))
+    schedule = hill_climb.student_swap(schedule,courses,halls)
+    print("New:", score(schedule, courses))
+>>>>>>> origin/master
 
 if __name__ == "__main__":
     main()

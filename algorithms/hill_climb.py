@@ -1,4 +1,5 @@
 import classes
+import random
 from score import *
 import random
 
@@ -11,8 +12,9 @@ def hill_climb(courses,halls):
 
 def student_swap(schedule, courses, halls):
     """
-    Finds the best possible swap of a pair of students for each course
-    (if it exists), returning a new schedule with these students swapped.
+    Finds a  swap of a pair of students for a random course that yields
+    a better score (if it exists),
+    returning a new schedule with these students swapped.
     """
     # flatten schedule in such a way that the teachings are sorted by timeslot
     # schedule is a list of lists, where each list contains
@@ -22,6 +24,7 @@ def student_swap(schedule, courses, halls):
     # create a list of teachings sorted by timeslot for each course
     sorted_teachings = []
     for course in courses:
+<<<<<<< HEAD
         course_teachings = []
         seminars = []
         practicals = []
@@ -64,6 +67,59 @@ def student_swap(schedule, courses, halls):
                         #new_score =
 
 
+=======
+        if course.get_group_count("seminar") or course.get_group_count("practical"):
+            course_teachings = []
+            seminars = []
+            practicals = []
+            for teaching in schedule_flat:
+                if teaching:
+                    if teaching.course.name == course.name:
+                        if teaching.type == "seminar":
+                            seminars.append(teaching)
+                        elif teaching.type == "practical":
+                            practicals.append(teaching)
+
+            course_teachings.append(seminars)
+            course_teachings.append(practicals)
+            sorted_teachings.append(course_teachings)
+
+    teachings = []
+    while not teachings:
+        random_course = sorted_teachings[random.randint(0, len(sorted_teachings)-1)]
+        if len(random_course[0]) > 1 and len(random_course[1]) > 1:
+            rand = random.randint(0,1)
+            teachings = random_course[rand]
+            if rand:
+                capacity = teachings[0].course.p_cap
+            else:
+                capacity = teachings[0].course.s_cap
+        elif len(random_course[0]) > 1:
+            teachings = random_course[0]
+            capacity = teachings[0].course.s_cap
+        elif len(random_course[1]) > 1:
+            teachings = random_course[1]
+            capacity = teachings[0].course.p_cap
+
+    old_score = score(schedule, courses)
+    for teaching in teachings:
+        for student in teaching.students:
+            for another_teaching in teachings:
+                if not another_teaching == teaching:
+                    for another_student in another_teaching.students:
+                        student, another_student = another_student, student
+                        if old_score < score(schedule, courses):
+                            return schedule
+                        student, another_student = another_student, student
+                    if len(teaching.students) > 1 and len(another_teaching.students) < capacity:
+                        teaching.students.remove(student)
+                        another_teaching.students.append(student)
+                        if old_score < score(schedule, courses):
+                            return schedule
+                        teaching.students.append(student)
+                        another_teaching.students.remove(student)
+    return schedule
+>>>>>>> origin/master
 
 
 def teaching_swap(schedule, courses, halls):
@@ -80,8 +136,11 @@ def teaching_swap(schedule, courses, halls):
     # are in the same list
     best_schedule = list(map(list, zip(*schedule)))
     best_score = score(schedule, courses)
+<<<<<<< HEAD
     same_schedules = []
     print("Old score:", best_score)
+=======
+>>>>>>> origin/master
 
     # check all possible swaps of teachings
     for i, old_teaching in enumerate(schedule_flat):
@@ -104,7 +163,5 @@ def teaching_swap(schedule, courses, halls):
 
                     # choose randomly between the schedules
                     best_schedule = random.choice(same_schedules)
-
-    print("New score:", best_score)
 
     return list(map(list, zip(*best_schedule)))
