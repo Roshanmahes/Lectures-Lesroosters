@@ -43,8 +43,9 @@ def main():
     #        worst_schedule = schedule
 
     schedule = algorithms.random_walk(courses,halls)
-    print_schedule(halls, schedule)
-    print_schedule(halls, hill_climb.teaching_swap(schedule, courses, halls))
+    print("Old:", score(schedule, courses))
+    schedule = hill_climb.student_swap(schedule,courses,halls)
+    print("New:", score(schedule, courses))
 
 if __name__ == "__main__":
     main()

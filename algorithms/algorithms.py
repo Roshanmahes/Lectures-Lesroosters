@@ -128,7 +128,7 @@ def random_fit(courses, halls):
     """
     Creates a schedule, filling all halls with teachings
     randomly provided that the hall is the first hall
-    which is available andlarge enough.
+    which is available and large enough.
     Returns a list of lists containing Teaching objects.
     """
     teachings = []
