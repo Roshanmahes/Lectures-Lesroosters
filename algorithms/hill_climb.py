@@ -24,7 +24,6 @@ def student_swap(schedule, courses, halls):
     # create a list of teachings sorted by timeslot for each course
     sorted_teachings = []
     for course in courses:
-<<<<<<< HEAD
         course_teachings = []
         seminars = []
         practicals = []
@@ -67,7 +66,6 @@ def student_swap(schedule, courses, halls):
                         #new_score =
 
 
-=======
         if course.get_group_count("seminar") or course.get_group_count("practical"):
             course_teachings = []
             seminars = []
@@ -119,7 +117,7 @@ def student_swap(schedule, courses, halls):
                         teaching.students.append(student)
                         another_teaching.students.remove(student)
     return schedule
->>>>>>> origin/master
+
 
 
 def teaching_swap(schedule, courses, halls):
@@ -136,11 +134,10 @@ def teaching_swap(schedule, courses, halls):
     # are in the same list
     best_schedule = list(map(list, zip(*schedule)))
     best_score = score(schedule, courses)
-<<<<<<< HEAD
+
     same_schedules = []
     print("Old score:", best_score)
-=======
->>>>>>> origin/master
+
 
     # check all possible swaps of teachings
     for i, old_teaching in enumerate(schedule_flat):
