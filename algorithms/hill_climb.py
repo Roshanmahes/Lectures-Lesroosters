@@ -1,7 +1,7 @@
 import classes
 import random
 from score import *
-import random
+
 
 def hill_climb(courses,halls):
     """
@@ -24,48 +24,6 @@ def student_swap(schedule, courses, halls):
     # create a list of teachings sorted by timeslot for each course
     sorted_teachings = []
     for course in courses:
-        course_teachings = []
-        seminars = []
-        practicals = []
-        for teaching in schedule_flat:
-            if teaching.course.name == course.name:
-                if teaching.type == "seminar":
-                    seminars.append(teaching)
-                elif teaching.type == "practical":
-                    practicals.append(teaching)
-        course_teachings.append(seminars)
-        course_teachings.append(practicals)
-        sorted_teachings.append(course_teachings)
-
-    best_schedule = schedule
-    best_score = score(schedule, courses)
-
-    for course_teachings in sorted_teachings:
-
-        best_schedule_per_course = best_schedule
-        best_score_per_course = score(best_schedule_per_course, courses)
-
-        # find best student swap between seminar groups
-        for i, seminar1 in enumerate(seminars):
-            for seminar2 in seminars[i+1:]:
-                for j, student1 in enumerate(seminar1.students):
-                    for student2 in seminar2.students[j+1:]:
-                        new_schedule = schedule
-
-                        # position of seminars in schedule
-                        #index1 = schedule_flat.index(seminar1)
-                        #index2 = schedule_flat.index(seminar2)
-
-                        # swap students
-                        seminar1.students.remove(student1)
-                        seminar1.students.append(student2)
-                        seminar2.students.remove(student2)
-                        seminar2.students.append(student1)
-
-                        # compute new score
-                        #new_score =
-
-
         if course.get_group_count("seminar") or course.get_group_count("practical"):
             course_teachings = []
             seminars = []
@@ -119,7 +77,6 @@ def student_swap(schedule, courses, halls):
     return schedule
 
 
-
 def teaching_swap(schedule, courses, halls):
     """
     Finds the best possible swap of a pair of teachings (if it exists),
@@ -135,10 +92,6 @@ def teaching_swap(schedule, courses, halls):
     best_schedule = list(map(list, zip(*schedule)))
     best_score = score(schedule, courses)
 
-    same_schedules = []
-    print("Old score:", best_score)
-
-
     # check all possible swaps of teachings
     for i, old_teaching in enumerate(schedule_flat):
         if old_teaching:
@@ -151,14 +104,7 @@ def teaching_swap(schedule, courses, halls):
 
                 # compute new score
                 new_score = score(list(map(list, zip(*new_schedule))), courses)
-                if new_score >= best_score:
-                    # we don't have schedules with same score anymore
-                    same_schedules = []
+                if new_score > best_score:
                     best_schedule, best_score = new_schedule, new_score
-                elif new_score == best_score:
-                    same_schedules.append(new_schedule)
-
-                    # choose randomly between the schedules
-                    best_schedule = random.choice(same_schedules)
 
     return list(map(list, zip(*best_schedule)))
