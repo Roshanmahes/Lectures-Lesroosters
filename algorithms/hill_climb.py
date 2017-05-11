@@ -2,42 +2,27 @@ import random
 from score import *
 
 
-def hill_climb(schedule, courses, halls):
+def hill_climb(schedule, courses, halls, runtime=100, student_iters=10, teaching_iters=1):
     """
     Executes the hill climbing algorithm.
     Returns a modified schedule when interrupted.
     """
-    swaps = 0
-    STUDENT_SWAP = 10
-    TEACHING_SWAP = 1
 
-    try:
-        while True:
-            schedule = swap_my_students(schedule, courses, halls, STUDENT_SWAP)
-            schedule = swap_my_teachings(schedule, courses, halls, TEACHING_SWAP)
-            swaps += STUDENT_SWAP + TEACHING_SWAP
+    for _ in range(runtime):
+        for __ in range(student_iters):
+            schedule = student_swap(schedule, courses, halls)
+        print("Students  swapped:", score(schedule, courses))
+        for __ in range(teaching_iters):
+            schedule = teaching_swap(schedule, courses, halls)
+        print("Teachings swapped:", score(schedule, courses))
 
-    except (KeyboardInterrupt, SystemExit):
-        print("swaps:", swaps)
-
-        return schedule
-
-def swap_my_students(schedule, courses, halls, iterations=1):
-    for _ in range(iterations):
-        schedule = student_swap(schedule, courses, halls)
-        print("New score (student swapped):", score(schedule, courses))
     return schedule
 
-def swap_my_teachings(schedule, courses, halls, iterations=1):
-    for _ in range(iterations):
-        schedule = teaching_swap(schedule, courses, halls)
-        print("New score (teaching swapped):", score(schedule, courses))
-    return schedule
 
-def student_swap(schedule, courses, halls):
+def student_swap(schedule, courses, halls, course_index=None):
     """
-    Finds a  swap of a pair of students for a random course that yields
-    a better score (if it exists),
+    Finds a  swap of a pair of students for the given course
+    (defaults to random) that yields a better score (if it exists),
     returning a new schedule with these students swapped.
     """
     # flatten schedule in such a way that the teachings are sorted by timeslot
@@ -45,11 +30,11 @@ def student_swap(schedule, courses, halls):
     # teachings scheduled at a certain hall
     schedule_flat = [teaching for timeslot in zip(*schedule) for teaching in timeslot]
 
-    # create a list of teachings sorted by timeslot for each course
-    sorted_teachings = []
-    for course in courses:
+    teachings = []
+    course_teachings = []
+    if course_index:
+        course = courses[course_index]
         if course.get_group_count("seminar") or course.get_group_count("practical"):
-            course_teachings = []
             seminars = []
             practicals = []
             for teaching in schedule_flat:
@@ -62,23 +47,42 @@ def student_swap(schedule, courses, halls):
 
             course_teachings.append(seminars)
             course_teachings.append(practicals)
-            sorted_teachings.append(course_teachings)
+        else:
+            return schedule
+    else:
+        # create a list of teachings sorted by timeslot for each course
+        sorted_teachings = []
+        for course in courses:
+            if course.get_group_count("seminar") or course.get_group_count("practical"):
+                teachings_for_course = []
+                seminars = []
+                practicals = []
+                for teaching in schedule_flat:
+                    if teaching:
+                        if teaching.course.name == course.name:
+                            if teaching.type == "seminar":
+                                seminars.append(teaching)
+                            elif teaching.type == "practical":
+                                practicals.append(teaching)
 
-    teachings = []
+                teachings_for_course.append(seminars)
+                teachings_for_course.append(practicals)
+                sorted_teachings.append(teachings_for_course)
+
     while not teachings:
-        random_course = sorted_teachings[random.randint(0, len(sorted_teachings)-1)]
-        if len(random_course[0]) > 1 and len(random_course[1]) > 1:
-            rand = random.randint(0,1)
-            teachings = random_course[rand]
-            if rand:
-                capacity = teachings[0].course.p_cap
-            else:
+        if not course_index:
+            course_teachings = random.choice(sorted_teachings)
+        if len(course_teachings[0]) > 1 and len(course_teachings[1]) > 1:
+            teachings = random.choice(course_teachings)
+            if teachings[0].type == "seminar":
                 capacity = teachings[0].course.s_cap
-        elif len(random_course[0]) > 1:
-            teachings = random_course[0]
+            else:
+                capacity = teachings[0].course.p_cap
+        elif len(course_teachings[0]) > 1:
+            teachings = course_teachings[0]
             capacity = teachings[0].course.s_cap
-        elif len(random_course[1]) > 1:
-            teachings = random_course[1]
+        elif len(course_teachings[1]) > 1:
+            teachings = course_teachings[1]
             capacity = teachings[0].course.p_cap
 
     old_score = score(schedule, courses)

@@ -1,9 +1,9 @@
 import classes
 import algorithms.algorithms as algorithms
 import algorithms.greedy as greedy
-import algorithms.hill_climb as hill_climb
 import csv
 
+from algorithms.hill_climb import hill_climb
 from functions import *
 from score import *
 
@@ -34,7 +34,7 @@ def main():
     print("Start score:", score(schedule, courses))
 
     # hill climbing
-    hillclimb = hill_climb.hill_climb(schedule, courses, halls)
+    hillclimb = hill_climb(schedule, courses, halls, 3)
 
     print_schedule(halls, hillclimb)
 
