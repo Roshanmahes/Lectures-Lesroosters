@@ -38,7 +38,7 @@ class Student:
     """
     Creates a student object containing student info and a list
     of courses which the student is following. The student data is
-    in the following format: [name, id, course1, course2, ...]
+    in the following format: [last name, first name, id, course1, course2, ...]
     """
     def __init__(self, data):
         self.name = data[1] + " " + data[0]
@@ -51,18 +51,29 @@ class Student:
 
 class Teaching:
     """
-    Creates a teaching object containing the type of teaching,
-    course data, a list of students following the teaching,
-    the hall and the timeslot.
+    Creates a teaching object containing the type of teaching, course data,
+    a list of students following the teaching and the hall.
+    Input is another teaching object (with optional additional hall arg),
+    in which case arg1 is a Teaching object, or manual entry of each argument,
+    in which case arg1 is one of "lecture", "seminar" or "practical".
     """
-    def __init__(self, _type, course, students, group="",
-        hall=None, timeslot=0):
-        self.course = course
-        self.type = _type
-        self.students = students
-        self.group = group
-        self.hall = hall
-        self.timeslot = timeslot
+    def __init__(self, arg1, course=None, students=[], group="",
+        hall=None):
+        if isinstance(arg1, type(self)):
+            self.type = arg1.type
+            self.course = arg1.course
+            self.students = arg1.students
+            self.group = arg1.group
+            if hall:
+                self.hall = hall
+            else:
+                self.hall = arg1.hall
+        else:
+            self.type = arg1
+            self.course = course
+            self.students = students
+            self.group = group
+            self.hall = hall
 
     def __repr__(self):
         group_str = ""

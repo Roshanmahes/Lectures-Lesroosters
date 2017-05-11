@@ -3,15 +3,6 @@ import random
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 TIMESLOTS = 20
-TEACHINGS = 129
-HALLS = 7
-MAX_ACTIVITIES = 5
-
-CONFIG_TWO_1 = [0,3]
-CONFIG_TWO_2 = [1,4]
-CONFIG_THREE = [0,2,4]
-CONFIG_FOUR = [0,1,3,4]
-CONFIG_FIVE = [0,1,2,3,4]
 
 def alphabetical(courses, halls):
     """
@@ -60,9 +51,8 @@ def alphabetical(courses, halls):
                     # insert the teaching into the schedule
                     schedule[i][tracker[i]] = teaching
 
-                    # add hall and timeslot to teaching object
+                    # add hall to teaching object
                     teaching.hall = halls[i]
-                    teaching.timeslot = tracker[i]
                     tracker[i] += 1
                     break
 
@@ -85,7 +75,8 @@ def random_walk(courses, halls):
             group_count = course.get_group_count("seminar")
             students_per_group = [0] * group_count
 
-            seminars = [classes.Teaching("seminar", course, [], ALPHABET[i]) for i in range(group_count)]
+            seminars = [classes.Teaching("seminar", course, [], ALPHABET[i]) \
+                    for i in range(group_count)]
 
             for student in course.students:
                 rand = random.randint(0, group_count - 1)
@@ -101,7 +92,8 @@ def random_walk(courses, halls):
             group_count = course.get_group_count("practical")
             students_per_group = [0] * group_count
 
-            practicals = [classes.Teaching("practical", course, [], ALPHABET[i]) for i in range(group_count)]
+            practicals = [classes.Teaching("practical", course, [], ALPHABET[i]) \
+                    for i in range(group_count)]
 
             for student in course.students:
                 rand = random.randint(0, group_count - 1)
@@ -143,7 +135,8 @@ def random_fit(courses, halls):
             group_count = course.get_group_count("seminar")
             students_per_group = [0] * group_count
 
-            seminars = [classes.Teaching("seminar", course, [], ALPHABET[i]) for i in range(group_count)]
+            seminars = [classes.Teaching("seminar", course, [], ALPHABET[i]) \
+                    for i in range(group_count)]
 
             for student in course.students:
                 rand = random.randint(0, group_count - 1)
@@ -159,7 +152,8 @@ def random_fit(courses, halls):
             group_count = course.get_group_count("practical")
             students_per_group = [0] * group_count
 
-            practicals = [classes.Teaching("practical", course, [], ALPHABET[i]) for i in range(group_count)]
+            practicals = [classes.Teaching("practical", course, [], ALPHABET[i]) \
+                    for i in range(group_count)]
 
             for student in course.students:
                 rand = random.randint(0, group_count - 1)
@@ -177,7 +171,7 @@ def random_fit(courses, halls):
     # keep track of how many timeslots have been filled for each hall
     tracker = [0] * len(halls)
 
-    teaching_index_list = random.sample(list(range(TEACHINGS)), TEACHINGS)
+    teaching_index_list = random.sample(list(range(len(teachings))), len(teachings))
 
     for index in teaching_index_list:
 
@@ -194,9 +188,8 @@ def random_fit(courses, halls):
                     # insert the teaching into the schedule
                     schedule[i][tracker[i]] = teaching
 
-                    # add hall and timeslot to teaching object
+                    # add hall to teaching object
                     teaching.hall = halls[i]
-                    teaching.timeslot = tracker[i]
                     tracker[i] += 1
                     break
 

@@ -1,8 +1,8 @@
 import random
+import classes
 from score import *
 
-
-def hill_climb(schedule, courses, halls, runtime=100, student_iters=10, teaching_iters=1):
+def hill_climb(schedule, courses, halls, runtime=1, student_iters=10, teaching_iters=1):
     """
     Executes the hill climbing algorithm.
     Returns a modified schedule when interrupted.
@@ -10,16 +10,22 @@ def hill_climb(schedule, courses, halls, runtime=100, student_iters=10, teaching
 
     for _ in range(runtime):
         for __ in range(student_iters):
-            schedule = student_swap(schedule, courses, halls)
+            schedule = first_student_swap(schedule, courses, halls)
         print("Students  swapped:", score(schedule, courses))
         for __ in range(teaching_iters):
-            schedule = teaching_swap(schedule, courses, halls)
+            schedule = best_teaching_swap(schedule, courses, halls)
         print("Teachings swapped:", score(schedule, courses))
 
     return schedule
 
 
-def student_swap(schedule, courses, halls, course_index=None):
+def random_student_swap(schedule, courses, halls, course_index=None):
+    """
+
+    """
+    # TODO
+
+def first_student_swap(schedule, courses, halls, course_index=None):
     """
     Finds a  swap of a pair of students for the given course
     (defaults to random) that yields a better score (if it exists),
@@ -90,11 +96,6 @@ def student_swap(schedule, courses, halls, course_index=None):
         for student in teaching.students:
             for another_teaching in teachings:
                 if not another_teaching in teachings[:teachings.index(teaching)]:
-                    for another_student in another_teaching.students:
-                        student, another_student = another_student, student
-                        if old_score < score(schedule, courses):
-                            return schedule
-                        student, another_student = another_student, student
                     if len(teaching.students) > 1 and len(another_teaching.students) < capacity:
                         teaching.students.remove(student)
                         another_teaching.students.append(student)
@@ -102,10 +103,22 @@ def student_swap(schedule, courses, halls, course_index=None):
                             return schedule
                         teaching.students.append(student)
                         another_teaching.students.remove(student)
+                    for another_student in another_teaching.students:
+                        student, another_student = another_student, student
+                        if old_score < score(schedule, courses):
+                            return schedule
+                        student, another_student = another_student, student
     return schedule
 
 
-def teaching_swap(schedule, courses, halls):
+def random_teaching_swap(schedule, courses, halls):
+    """
+
+    """
+    # TODO
+
+
+def best_teaching_swap(schedule, courses, halls):
     """
     Finds the best possible swap of a pair of teachings (if it exists),
     returning a new schedule with these teachings swapped.
@@ -114,37 +127,54 @@ def teaching_swap(schedule, courses, halls):
     # schedule is a list of lists, where each list contains
     # teachings scheduled at a certain hall
     schedule_flat = [teaching for timeslot in zip(*schedule) for teaching in timeslot]
+    hall_count = len(halls)
 
-    # transpose schedule such that teachings of the same timeslot
-    # are in the same list
-    best_schedule = list(map(list, zip(*schedule)))
+    best_schedule = schedule
     best_score = score(schedule, courses)
 
-    # initialise array with 'equivalent' schedules (that means, having same score)
+    # initialise array with 'equivalent' schedules (having the same score)
     equiv_schedules = []
-
     # check all possible swaps of teachings
     for i, old_teaching in enumerate(schedule_flat):
-        if old_teaching:
-            for j, new_teaching in enumerate(schedule_flat[i+1:]):
-                new_schedule = list(map(list, zip(*schedule)))
+        for m, new_teaching in enumerate(schedule_flat[i+1:]):
+            j = m+i+1
+            # copy schedule_flat to an editable version
+            new_schedule_flat = [teaching for timeslot in zip(*schedule) for teaching in timeslot]
 
-                # swap old_teaching and new_teaching
-                new_schedule[old_teaching.timeslot][i % len(halls)] = new_teaching
-                new_schedule[(j+i+1) // len(halls)][(j+i+1) % len(halls)] = old_teaching
+            # remember if the ith entry is None before overwriting it
+            teaching_at_i = False
+            if new_schedule_flat[i]:
+                teaching_at_i = True
 
-                # compute new score
-                new_score = score(list(map(list, zip(*new_schedule))), courses)
-                if new_score > best_score:
-                    best_schedule, best_score = new_schedule, new_score
+            # swap teachings
+            if new_schedule_flat[j]:
+                new_schedule_flat[i] = classes.Teaching(new_teaching, hall=halls[i % 7])
+            else:
+                new_schedule_flat[i] = None
+            if teaching_at_i:
+                new_schedule_flat[j] = classes.Teaching(old_teaching, hall=halls[j % 7])
+            else:
+                new_schedule_flat[j] = None
 
-                    # there are no 'equivalent' schedules anymore
-                    equiv_schedules = []
-                elif new_score == best_score:
-                    equiv_schedules.append(new_schedule)
+            # create new_schedule from new_schedule_flat
+            new_schedule = [[None for _ in range(TIMESLOTS)] for __ in range(hall_count)]
+            for k,teaching in enumerate(new_schedule_flat):
+                new_schedule[k % hall_count][k // hall_count] = teaching
+
+            # compute new score
+            new_score = score(new_schedule, courses)
+            if new_score > best_score:
+                best_schedule, best_score = new_schedule, new_score
+
+                # there are no 'equivalent' schedules anymore
+                equiv_schedules = []
+
+            # remember equivalent schedule
+            elif new_score == best_score:
+                equiv_schedules.append(new_schedule)
 
     # choose randomly between the equivalent schedules
     if equiv_schedules:
         best_schedule = random.choice(equiv_schedules)
 
-    return list(map(list, zip(*best_schedule)))
+    return best_schedule

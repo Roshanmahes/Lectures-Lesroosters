@@ -3,6 +3,7 @@ from operator import itemgetter
 
 # configurations eligible for bonus points
 OPTIMAL_CONFIGURATIONS = {"03","14","02-24","01-13-34"}
+TIMESLOTS = 20
 PERIODS = 4
 
 def score(schedule, courses):
@@ -18,12 +19,9 @@ def score(schedule, courses):
     schedule_flat = [teaching for timeslot in zip(*schedule)
         for teaching in timeslot]
 
-    # remove all empty teachings
-    schedule_flat = [teaching for teaching in schedule_flat if teaching]
-
     # calculate bonus and malus points
     score += capacity_points(schedule_flat) + conflict_points(schedule) \
-        + configuration_points(schedule_flat, courses)
+        + configuration_points(schedule, schedule_flat, courses)
 
     return score
 
@@ -35,8 +33,9 @@ def capacity_points(schedule_flat, malus=1):
     points = 0
 
     for teaching in schedule_flat:
-        if len(teaching.students) > teaching.hall.capacity:
-            points -= malus * (len(teaching.students) - teaching.hall.capacity)
+        if teaching:
+            if len(teaching.students) > teaching.hall.capacity:
+                points -= malus * (len(teaching.students) - teaching.hall.capacity)
 
     return points
 
@@ -70,7 +69,7 @@ def conflict_points(schedule, malus=1):
 
     return points
 
-def configuration_points(schedule_flat, courses, malus=10, bonus=20):
+def configuration_points(schedule, schedule_flat, courses, malus=10, bonus=20):
     """
     Compute bonus and malus points corresponding to the
     quality of the distribution of each course over the week.
@@ -85,8 +84,9 @@ def configuration_points(schedule_flat, courses, malus=10, bonus=20):
     for course in courses:
         course_teachings = []
         for teaching in schedule_flat:
-            if teaching.course.name == course.name:
-                course_teachings.append(teaching)
+            if teaching:
+                if teaching.course.name == course.name:
+                    course_teachings.append(teaching)
         sorted_teachings.append(course_teachings)
 
     # initialise list of activity distributions that will be needed to
@@ -114,8 +114,8 @@ def configuration_points(schedule_flat, courses, malus=10, bonus=20):
             successor = course_teachings[i+1]
 
             # day on which teaching (resp. its successor) takes place
-            teaching_day = teaching.timeslot // PERIODS
-            successor_day = successor.timeslot // PERIODS
+            teaching_day = schedule_flat.index(teaching) // len(schedule) // PERIODS
+            successor_day = schedule_flat.index(successor) // len(schedule) // PERIODS
 
             # reset daily variables if new day is reached
             if teaching_day != current_day:

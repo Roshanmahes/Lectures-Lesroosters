@@ -4,6 +4,7 @@ import algorithms.greedy as greedy
 import csv
 
 from algorithms.hill_climb import hill_climb
+from algorithms.hill_climb import *
 from functions import *
 from score import *
 
@@ -29,14 +30,7 @@ def main():
     # create list of Course objects
     courses = create_course_list(course_list, students)
 
-    # create random_fit schedule
-    schedule = algorithms.random_fit(courses,halls)
-    print("Start score:", score(schedule, courses))
-
-    # hill climbing
-    hillclimb = hill_climb(schedule, courses, halls, 3)
-
-    print_schedule(halls, hillclimb)
+    # run some algorithms here
 
 
 if __name__ == "__main__":
