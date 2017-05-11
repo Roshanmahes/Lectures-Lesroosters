@@ -3,6 +3,7 @@ import algorithms.algorithms as algorithms
 import algorithms.greedy as greedy
 import algorithms.hill_climb as hill_climb
 import csv
+
 from functions import *
 from score import *
 
@@ -28,10 +29,14 @@ def main():
     # create list of Course objects
     courses = create_course_list(course_list, students)
 
+    # create random_fit schedule
     schedule = algorithms.random_fit(courses,halls)
-    print("Old:", score(schedule, courses))
-    schedule = hill_climb.student_swap(schedule,courses,halls)
-    print("New:", score(schedule, courses))
+    print("Start score:", score(schedule, courses))
+
+    # hill climbing
+    hillclimb = hill_climb.hill_climb(schedule, courses, halls)
+
+    print_schedule(halls, hillclimb)
 
 
 if __name__ == "__main__":
