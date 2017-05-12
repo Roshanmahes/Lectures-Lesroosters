@@ -3,7 +3,6 @@ import algorithms.algorithms as algorithms
 import algorithms.greedy as greedy
 import csv
 
-from algorithms.hill_climb import hill_climb
 from algorithms.hill_climb import *
 from functions import *
 from score import *

@@ -113,10 +113,45 @@ def first_student_swap(schedule, courses, halls, course_index=None):
 
 def random_teaching_swap(schedule, courses, halls):
     """
-
+    Swaps two randomly selected teachings, returning the new schedule.
     """
-    # TODO
+    # flatten schedule in such a way that the teachings are sorted by timeslot
+    # schedule is a list of lists, where each list contains
+    # teachings scheduled at a certain hall
+    schedule_flat = [teaching for timeslot in zip(*schedule) for teaching in timeslot]
+    hall_count = len(halls)
+    teaching_count = len(schedule_flat)
 
+    # select random teachings
+    first_index = random.randrange(teaching_count)
+    second_index = random.randrange(teaching_count)
+    first_teaching = schedule_flat[first_index]
+    second_teaching = schedule_flat[second_index]
+
+    # ensure teachings are different
+    while first_teaching == second_teaching:
+        second_teaching = random.choice(schedule_flat)
+
+    # swap teachings
+    if second_teaching:
+        first_to_swap = classes.Teaching(second_teaching, hall=halls[first_index % hall_count])
+    else:
+        first_to_swap = None
+    if first_teaching:
+        second_to_swap = classes.Teaching(first_teaching, hall=halls[second_index % hall_count])
+    else:
+        second_to_swap = None
+
+    # create new_schedule from schedule
+    new_schedule = [None]*len(schedule)
+    for k,row in enumerate(schedule):
+        new_schedule[k] = list(row)
+
+    # swap teachings
+    new_schedule[first_index % hall_count][first_index // hall_count] = first_to_swap
+    new_schedule[second_index % hall_count][second_index // hall_count] = second_to_swap
+
+    return new_schedule
 
 def best_teaching_swap(schedule, courses, halls):
     """
@@ -138,25 +173,18 @@ def best_teaching_swap(schedule, courses, halls):
     for i, old_teaching in enumerate(schedule_flat):
         for m, new_teaching in enumerate(schedule_flat[i+1:]):
             j = m+i+1
-            # copy schedule_flat to an editable version
-
-
-            # remember if the ith entry is None before overwriting it
-            teaching_at_i = False
-            if old_teaching:
-                teaching_at_i = True
 
             # swap teachings
             if new_teaching:
-                first_to_swap = classes.Teaching(new_teaching, hall=halls[i % 7])
+                first_to_swap = classes.Teaching(new_teaching, hall=halls[i % hall_count])
             else:
                 first_to_swap = None
-            if teaching_at_i:
-                second_to_swap = classes.Teaching(old_teaching, hall=halls[j % 7])
+            if old_teaching:
+                second_to_swap = classes.Teaching(old_teaching, hall=halls[j % hall_count])
             else:
                 second_to_swap = None
 
-            # create new_schedule from new_schedule_flat
+            # create new_schedule from schedule
             new_schedule = [None]*len(schedule)
             for k,row in enumerate(schedule):
                 new_schedule[k] = list(row)

@@ -28,7 +28,7 @@ def read(path, sort=False, sort_column=1):
     return result
 
 
-def create_course_list(course_list, student_list):
+def create_course_list(course_list, students):
     """
     Returns a list of Course objects, each
     containing students following the course.
@@ -36,7 +36,7 @@ def create_course_list(course_list, student_list):
     courses = [classes.Course(data, []) for data in course_list]
 
     # assign students to corresponding Course objects
-    for student in student_list:
+    for student in students:
         for course_name in student.courses:
             for course in courses:
                 if course_name == course.name:
@@ -45,15 +45,15 @@ def create_course_list(course_list, student_list):
 
     return courses
 
-def print_schedule(schedule, hall_list):
+def print_schedule(schedule, halls):
     """
-    Prints a table containing a schedule with lists from hall_list.
+    Prints a table containing a schedule with halls from halls.
     """
     # the headers of the table are the hall names
-    headers = [hall.name for hall in hall_list]
+    headers = [hall.name for hall in halls]
     headers.insert(0,"")
 
-    # initialize a list that will be in the format accepted by tabulate
+    # initialise a list that will be in the format accepted by tabulate
     printable_schedule = []
 
     for i,t in enumerate(zip(*schedule)):
@@ -63,7 +63,7 @@ def print_schedule(schedule, hall_list):
         # insert weekday dividers
         if not i % PERIODS:
             day_row = [WEEKDAYS[i // PERIODS]]
-            day_row.extend([None] * len(hall_list))
+            day_row.extend([None] * len(halls))
             printable_schedule.append(day_row)
 
         # add the corresponding time to the row
