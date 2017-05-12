@@ -139,27 +139,29 @@ def best_teaching_swap(schedule, courses, halls):
         for m, new_teaching in enumerate(schedule_flat[i+1:]):
             j = m+i+1
             # copy schedule_flat to an editable version
-            new_schedule_flat = [teaching for timeslot in zip(*schedule) for teaching in timeslot]
+
 
             # remember if the ith entry is None before overwriting it
             teaching_at_i = False
-            if new_schedule_flat[i]:
+            if old_teaching:
                 teaching_at_i = True
 
             # swap teachings
-            if new_schedule_flat[j]:
-                new_schedule_flat[i] = classes.Teaching(new_teaching, hall=halls[i % 7])
+            if new_teaching:
+                first_to_swap = classes.Teaching(new_teaching, hall=halls[i % 7])
             else:
-                new_schedule_flat[i] = None
+                first_to_swap = None
             if teaching_at_i:
-                new_schedule_flat[j] = classes.Teaching(old_teaching, hall=halls[j % 7])
+                second_to_swap = classes.Teaching(old_teaching, hall=halls[j % 7])
             else:
-                new_schedule_flat[j] = None
+                second_to_swap = None
 
             # create new_schedule from new_schedule_flat
-            new_schedule = [[None for _ in range(TIMESLOTS)] for __ in range(hall_count)]
-            for k,teaching in enumerate(new_schedule_flat):
-                new_schedule[k % hall_count][k // hall_count] = teaching
+            new_schedule = [None]*len(schedule)
+            for k,row in enumerate(schedule):
+                new_schedule[k] = list(row)
+            new_schedule[i % hall_count][i // hall_count] = first_to_swap
+            new_schedule[j % hall_count][j // hall_count] = second_to_swap
 
             # compute new score
             new_score = score(new_schedule, courses)

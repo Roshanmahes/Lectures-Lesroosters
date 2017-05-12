@@ -45,7 +45,7 @@ def create_course_list(course_list, student_list):
 
     return courses
 
-def print_schedule(hall_list, schedule):
+def print_schedule(schedule, hall_list):
     """
     Prints a table containing a schedule with lists from hall_list.
     """
