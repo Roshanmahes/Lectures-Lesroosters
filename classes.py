@@ -62,7 +62,7 @@ class Teaching:
         if isinstance(arg1, type(self)):
             self.type = arg1.type
             self.course = arg1.course
-            self.students = arg1.students
+            self.students = list(arg1.students)
             self.group = arg1.group
             if hall:
                 self.hall = hall

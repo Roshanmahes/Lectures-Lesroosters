@@ -31,6 +31,5 @@ def main():
 
     # run some algorithms here
 
-
 if __name__ == "__main__":
     main()

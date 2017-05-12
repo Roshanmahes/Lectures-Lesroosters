@@ -34,7 +34,7 @@ def alphabetical(courses, halls):
                     course, group, ALPHABET[i]))
 
     # create an empty schedule of the right dimensions
-    schedule = [[None for i in range(TIMESLOTS)] for j in range(len(halls))]
+    schedule = [[None]*TIMESLOTS for _ in range(len(halls))]
 
     # keep track of how many timeslots have been filled for each hall
     tracker = [0] * len(halls)
@@ -106,7 +106,7 @@ def random_walk(courses, halls):
                 teachings.append(practical)
 
     # create an empty schedule of the right dimensions
-    schedule = [[None for i in range(TIMESLOTS)] for j in range(len(halls))]
+    schedule = [[None]*TIMESLOTS for _ in range(len(halls))]
     entries = list(range(TIMESLOTS * len(halls)))
     for teaching in teachings:
         rand = entries[random.randint(0, len(entries) - 1)]
@@ -166,7 +166,7 @@ def random_fit(courses, halls):
                 teachings.append(practical)
 
     # create an empty schedule of the right dimensions
-    schedule = [[None for i in range(TIMESLOTS)] for j in range(len(halls))]
+    schedule = [[None]*TIMESLOTS for _ in range(len(halls))]
 
     # keep track of how many timeslots have been filled for each hall
     tracker = [0] * len(halls)

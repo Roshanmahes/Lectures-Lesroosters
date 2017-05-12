@@ -6,6 +6,7 @@ from tabulate import tabulate
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 TIMESTRINGS = ["9-11", "11-13", "13-15", "15-17"]
 PERIODS = len(TIMESTRINGS)
+TIMESLOTS = 20
 DATA_OFFSET = 3
 
 def read(path, sort=False, sort_column=1):
@@ -72,3 +73,13 @@ def print_schedule(schedule, halls):
         printable_schedule.append(schedule_row)
 
     print(tabulate(printable_schedule, headers))
+
+def inflate_schedule_flat(schedule_flat):
+    """
+    Takes a flattened schedule and returns a schedule of proper dimensions
+    """
+    hall_count = len(schedule_flat) // TIMESLOTS
+    schedule = [[None]*TIMESLOTS for _ in range(hall_count)]
+    for i,teaching in enumerate(schedule_flat):
+        schedule[i % hall_count][i // hall_count] = teaching
+    return schedule
