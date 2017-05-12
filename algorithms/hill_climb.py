@@ -2,7 +2,8 @@ import random
 import classes
 from score import *
 
-def hill_climb(schedule, courses, halls, runtime=1, student_iters=10, teaching_iters=1):
+def hill_climb(schedule, courses, halls, runtime=1,
+    student_iters=10, teaching_iters=1):
     """
     Executes the hill climbing algorithm.
     Returns a modified schedule when interrupted.
@@ -118,7 +119,8 @@ def random_teaching_swap(schedule, courses, halls):
     # flatten schedule in such a way that the teachings are sorted by timeslot
     # schedule is a list of lists, where each list contains
     # teachings scheduled at a certain hall
-    schedule_flat = [teaching for timeslot in zip(*schedule) for teaching in timeslot]
+    schedule_flat = [teaching for timeslot in zip(*schedule)
+        for teaching in timeslot]
     hall_count = len(halls)
     teaching_count = len(schedule_flat)
 
@@ -134,11 +136,13 @@ def random_teaching_swap(schedule, courses, halls):
 
     # swap teachings
     if second_teaching:
-        first_to_swap = classes.Teaching(second_teaching, hall=halls[first_index % hall_count])
+        first_to_swap = classes.Teaching(second_teaching,
+            hall=halls[first_index % hall_count])
     else:
         first_to_swap = None
     if first_teaching:
-        second_to_swap = classes.Teaching(first_teaching, hall=halls[second_index % hall_count])
+        second_to_swap = classes.Teaching(first_teaching,
+            hall=halls[second_index % hall_count])
     else:
         second_to_swap = None
 
@@ -148,8 +152,10 @@ def random_teaching_swap(schedule, courses, halls):
         new_schedule[k] = list(row)
 
     # swap teachings
-    new_schedule[first_index % hall_count][first_index // hall_count] = first_to_swap
-    new_schedule[second_index % hall_count][second_index // hall_count] = second_to_swap
+    new_schedule[first_index % hall_count] \
+        [first_index // hall_count] = first_to_swap
+    new_schedule[second_index % hall_count] \
+        [second_index // hall_count] = second_to_swap
 
     return new_schedule
 
@@ -161,7 +167,8 @@ def best_teaching_swap(schedule, courses, halls):
     # flatten schedule in such a way that the teachings are sorted by timeslot
     # schedule is a list of lists, where each list contains
     # teachings scheduled at a certain hall
-    schedule_flat = [teaching for timeslot in zip(*schedule) for teaching in timeslot]
+    schedule_flat = [teaching for timeslot in zip(*schedule)
+        for teaching in timeslot]
     hall_count = len(halls)
 
     best_schedule = schedule
@@ -176,11 +183,13 @@ def best_teaching_swap(schedule, courses, halls):
 
             # swap teachings
             if new_teaching:
-                first_to_swap = classes.Teaching(new_teaching, hall=halls[i % hall_count])
+                first_to_swap = classes.Teaching(new_teaching,
+                    hall=halls[i % hall_count])
             else:
                 first_to_swap = None
             if old_teaching:
-                second_to_swap = classes.Teaching(old_teaching, hall=halls[j % hall_count])
+                second_to_swap = classes.Teaching(old_teaching,
+                    hall=halls[j % hall_count])
             else:
                 second_to_swap = None
 
