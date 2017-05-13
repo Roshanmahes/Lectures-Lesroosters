@@ -11,7 +11,6 @@ def main():
     """
     Executes main.py.
     """
-
     # read data from files
     # students.csv is in the following format:
     # last name, first name, id, courses
@@ -30,6 +29,9 @@ def main():
     courses = create_course_list(course_list, students)
 
     # run some algorithms here
+    schedule = algorithms.alphabetical(courses,halls)
+    points = score(schedule,halls)
+    save_schedule(schedule,halls,str(points))
 
 if __name__ == "__main__":
     main()

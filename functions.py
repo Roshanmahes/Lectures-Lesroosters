@@ -1,13 +1,19 @@
 import classes
 import csv
+
+from tabulate import tabulate ### TEMPORARY
 from operator import itemgetter
-from tabulate import tabulate
+
+from reportlab.lib.colors import HexColor
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 TIMESTRINGS = ["9-11", "11-13", "13-15", "15-17"]
 PERIODS = len(TIMESTRINGS)
-TIMESLOTS = 20
-DATA_OFFSET = 3
+TIMESLOTS = len(WEEKDAYS)*PERIODS
+PADDING, TEACHING_SIZE = 4, 3
 
 def read(path, sort=False, sort_column=1):
     """
@@ -28,7 +34,6 @@ def read(path, sort=False, sort_column=1):
 
     return result
 
-
 def create_course_list(course_list, students):
     """
     Returns a list of Course objects, each
@@ -46,9 +51,47 @@ def create_course_list(course_list, students):
 
     return courses
 
+def save_schedule(my_schedule, halls, filename="schedule"):
+    """
+    Builds and saves a table (as filename.pdf)
+    containing my_schedule with halls.
+    """
+    # initialise schedule's header with hall names
+    schedule = [[str(hall.name) for hall in halls]]
+    schedule[0].insert(0,"Schedule:")
+
+    for i,t in enumerate(zip(*my_schedule)):
+        # transpose a schedule column to be a row
+        schedule_row = list(t)
+
+        # insert weekday dividers
+        if not i % PERIODS:
+            day_row = [WEEKDAYS[i // PERIODS]]
+            day_row.extend([None]*len(halls))
+            schedule.append(day_row)
+
+        # add the corresponding time to the row
+        schedule_row.insert(0, TIMESTRINGS[i % PERIODS])
+        schedule.append(schedule_row)
+
+    schedule = Table(schedule)
+
+    # define colors to make table fancier
+    red, grey, blue = HexColor(0xB22222), HexColor(0xdad5d2), HexColor(0x0094ff)
+    schedule.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),grey),
+    ('TEXTCOLOR',(0,0),(0,-1),red), ('TEXTCOLOR',(0,0),(-1,0),red),
+    ('LINEABOVE',(0,0),(-1,0),2,blue), ('LINEBELOW',(0,-1),(-1,-1),2,blue),
+    ('LINEBELOW',(0,0),(-1,0),2,blue), ('LINEBEFORE',(0,0),(0,-1),2,blue),
+    ('LINEAFTER',(-1,0),(-1,-1),2,blue), ('LINEAFTER',(0,0),(0,-1),2.3,blue)]))
+
+    # build filename.pdf
+    width, height = (PADDING + TEACHING_SIZE*len(halls))*inch, 8.7*inch
+    SimpleDocTemplate("schedules/" + str(filename) + ".pdf",
+        pagesize=(width, height)).build([schedule])
+
 def print_schedule(schedule, halls):
     """
-    Prints a table containing a schedule with halls from halls.
+    TEMPORARY! Prints a table containing a schedule with halls from halls.
     """
     # the headers of the table are the hall names
     headers = [hall.name for hall in halls]
@@ -64,7 +107,7 @@ def print_schedule(schedule, halls):
         # insert weekday dividers
         if not i % PERIODS:
             day_row = [WEEKDAYS[i // PERIODS]]
-            day_row.extend([None] * len(halls))
+            day_row.extend([None]*len(halls))
             printable_schedule.append(day_row)
 
         # add the corresponding time to the row
@@ -82,4 +125,5 @@ def inflate_schedule_flat(schedule_flat):
     schedule = [[None]*TIMESLOTS for _ in range(hall_count)]
     for i,teaching in enumerate(schedule_flat):
         schedule[i % hall_count][i // hall_count] = teaching
+
     return schedule
