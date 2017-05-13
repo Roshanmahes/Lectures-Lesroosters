@@ -1,0 +1,33 @@
+SCORE:
+Beste score: 293
+Slechtste score: -672
+Mediaan: -179
+Gemiddelde: -180.0002
+#Positieve scores: 29668
+#Negatieve scores: 969640
+SD: 96.78813
+Variantie: 9367.942
+
+CAPACITY POINTS:
+Beste score: -161
+Slechtste score: -782
+Mediaan: -474
+Gemiddelde: -473.8691
+SD: 69.00612
+Variantie: 4761.844
+
+CONFLICT POINTS:
+Beste score: -302
+Slechtste score: -769
+Mediaan: -445
+Gemiddelde: -449.0757
+SD: 47.92201
+Variantie: 2296.519
+
+CONFIGURATION POINTS:
+Beste score: -60
+Slechtste score: -420
+Mediaan: -260
+Gemiddelde: -257.0554
+SD: 38.5799
+Variantie: 1488.409

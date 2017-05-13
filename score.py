@@ -23,7 +23,8 @@ def score(schedule, courses):
     score += capacity_points(schedule_flat) + conflict_points(schedule) \
         + configuration_points(schedule, schedule_flat, courses)
 
-    return score
+    return capacity_points(schedule_flat), conflict_points(schedule), \
+        configuration_points(schedule, schedule_flat, courses), score
 
 def capacity_points(schedule_flat, malus=1):
     """
