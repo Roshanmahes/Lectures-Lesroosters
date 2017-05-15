@@ -5,7 +5,8 @@ import random
 from score import *
 
 def simulated_annealing(schedule, courses, halls, start_temp=1,
-    end_temp=0.0001, max_iter=200, student_prob=0.9):
+    end_temp=0.0001, max_iter=200, student_prob=0.9,
+    student_swaps=10, teaching_swaps=1):
     """
     Executes the simulated annealing algorithm.
     Returns a modified schedule.
@@ -18,30 +19,32 @@ def simulated_annealing(schedule, courses, halls, start_temp=1,
 
         # perform student swap with probability student_prob
         if student_prob > rand:
-            new_schedule = random_student_swap(schedule, courses, halls)
             students_swapped = True
-
+            iter_count = student_swaps
         # else perform teaching swap
         else:
-            new_schedule = random_teaching_swap(schedule, courses, halls)
             students_swapped = False
+            iter_count = teaching_swaps
 
-        # compute scores
-        old_score = score(schedule, courses)
-        new_score = score(new_schedule, courses)
-        probability = random.random()
+        for _ in range(iter_count):
+            # swap either students or teachings
+            if students_swapped:
+                new_schedule = random_student_swap(schedule, courses, halls)
+            else:
+                new_schedule = random_teaching_swap(schedule, courses, halls)
 
-        # compute probability of accepting new schedule
-        if acceptance_probability(old_score,new_score,
-            temperature) > probability:
-            schedule = new_schedule
+            # compute scores
+            old_score = score(schedule, courses)
+            new_score = score(new_schedule, courses)
+            probability = random.random()
+
+            # compute probability of accepting new schedule
+            if acceptance_probability(old_score,new_score,
+                temperature) > probability:
+                schedule = new_schedule
 
         # decrement temperature
         temperature *= ((end_temp/start_temp) ** (1/max_iter))
-        """if students_swapped:
-            temperature *= (1-student_prob) * ((end_temp/start_temp) ** (1/max_iter))
-        else:
-            temperature *= ((end_temp/start_temp) ** (1/max_iter))"""
 
     return schedule
 
