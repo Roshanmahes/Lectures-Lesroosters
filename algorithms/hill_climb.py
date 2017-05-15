@@ -24,7 +24,6 @@ def random_student_swap(schedule, courses, halls):
     """
     Swaps two randomly selected students of a randomly selected course
     """
-
     # randomly find a course in which a swap can be made
     valid_courses = list(courses)
     swappable_types = []

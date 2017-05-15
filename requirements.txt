@@ -2,4 +2,4 @@
 # program successfully.
 # To install them, paste 'pip install requirements.txt' into your terminal.
 
-tabulate==0.7.7
+reportlab==3.4.0
