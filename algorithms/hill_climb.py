@@ -1,6 +1,6 @@
-import random
 import classes
-from functions import inflate_schedule_flat
+import functions
+import random
 from score import *
 
 def hill_climb(schedule, courses, halls, runtime=1,
@@ -27,19 +27,20 @@ def random_student_swap(schedule, courses, halls):
 
     # randomly find a course in which a swap can be made
     valid_courses = list(courses)
-    swapable_types = []
-    while not swapable_types:
+    swappable_types = []
+    while not swappable_types:
         course = random.choice(valid_courses)
+
         if course.seminars or course.practicals:
             if course.get_group_count("seminar") > 1:
-                swapable_types.append("seminar")
+                swappable_types.append("seminar")
             elif course.get_group_count("practical") > 1:
-                swapable_types.append("practical")
-        if not swapable_types:
+                swappable_types.append("practical")
+        if not swappable_types:
             valid_courses.remove(course)
 
     # select a random type of teaching from the valid choices for course
-    teaching_type = random.choice(swapable_types)
+    teaching_type = random.choice(swappable_types)
 
     # flatten schedule in such a way that the teachings are sorted by timeslot
     # schedule is a list of lists, where each list contains
@@ -83,16 +84,16 @@ def random_student_swap(schedule, courses, halls):
 
     # if j is within range, swap the students at i and j
     try:
-        first_group[i], second_group[j] = \
-                second_group[j], first_group[i]
+        first_group[i], second_group[j] = second_group[j], first_group[i]
     # if j is out of range, there is no student at j so put the i student there
     except IndexError:
         second_group.append(first_group[i])
         first_group.pop(i)
 
-    return inflate_schedule_flat(schedule_flat)
+    return functions.inflate_schedule_flat(schedule_flat)
 
-def first_student_swap(schedule, courses, halls, course_index=0, teaching_type="seminar"):
+def first_student_swap(schedule, courses, halls, course_index=0,
+    teaching_type="seminar"):
     """
     Finds a  swap of a pair of students for the given course and
     type of teaching that yields a better score (if it exists),
@@ -139,36 +140,42 @@ def first_student_swap(schedule, courses, halls, course_index=0, teaching_type="
     old_score = score(schedule, courses)
     for i,group in enumerate(groups):
         students = group.students
+
         for j,student in enumerate(students):
             for another_group in groups:
                 other_students = another_group.students
                 # if there are two or more students in the group and less
                 # students in the other group than the capacity
-                if len(students) > 1 and \
-                        len(other_students) < capacity:
+                if len(students) > 1 and len(other_students) < capacity:
                     # put student into the other group
                     students.pop(j)
                     other_students.append(student)
                     new_schedule = inflate_schedule_flat(schedule_flat)
+
                     # done if the score is better
                     if old_score < score(new_schedule, courses):
                         return new_schedule
+
                     # put student back in original group
                     students.insert(j, student)
                     other_students.remove(student)
+
                 if another_group not in groups[:i]:
                     for k in range(len(other_students)):
                         # swap students
                         students[j], other_students[k] = \
                                 other_students[k], students[j]
                         new_schedule = inflate_schedule_flat(schedule_flat)
+
                         # done if the score is better
                         if old_score < score(new_schedule, courses):
                             return new_schedule
+
                         # swap back
                         students[j], other_students[k] = \
                                 other_students[k], students[j]
-    # no benificial swap found
+
+    # no beneficial swap found
     return schedule
 
 def best_teaching_swap(schedule, courses, halls):
@@ -191,6 +198,7 @@ def best_teaching_swap(schedule, courses, halls):
     # check all possible swaps of teachings
     for i, old_teaching in enumerate(schedule_flat):
         for m, new_teaching in enumerate(schedule_flat[i+1:]):
+            # position of new_teaching in schedule_flat
             j = m+i+1
 
             # swap teachings
@@ -199,6 +207,7 @@ def best_teaching_swap(schedule, courses, halls):
                     hall=halls[i % hall_count])
             else:
                 first_to_swap = None
+
             if old_teaching:
                 second_to_swap = classes.Teaching(old_teaching,
                     hall=halls[j % hall_count])

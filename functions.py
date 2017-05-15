@@ -76,10 +76,11 @@ def print_schedule(schedule, halls):
 
 def inflate_schedule_flat(schedule_flat):
     """
-    Takes a flattened schedule and returns a schedule of proper dimensions
+    Takes a flattened schedule and returns a schedule of proper dimensions.
     """
     hall_count = len(schedule_flat) // TIMESLOTS
     schedule = [[None]*TIMESLOTS for _ in range(hall_count)]
+
     for i,teaching in enumerate(schedule_flat):
         schedule[i % hall_count][i // hall_count] = teaching
     return schedule
