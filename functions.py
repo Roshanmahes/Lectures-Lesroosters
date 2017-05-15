@@ -4,7 +4,7 @@ import csv
 from tabulate import tabulate ### TEMPORARY
 from operator import itemgetter
 
-from reportlab.lib.colors import HexColor
+from reportlab.lib.colors import HexColor as Color
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
@@ -13,7 +13,15 @@ WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 TIMESTRINGS = ["9-11", "11-13", "13-15", "15-17"]
 PERIODS = len(TIMESTRINGS)
 TIMESLOTS = len(WEEKDAYS)*PERIODS
-PADDING, TEACHING_SIZE = 4, 3
+PADDING, TEACHING_SIZE = 4, 3.2
+
+# default tablestyle
+PRIMARY, ACCENT, BORDER =  Color(0xD0D0D0), Color(0x818181), Color(0x7D7D7D)
+STYLE = [('BACKGROUND',(0,0),(-1,-1),ACCENT), ('TEXTCOLOR',(0,0),(0,-1),PRIMARY),
+('BACKGROUND',(1,1),(-1,-1),PRIMARY), ('TEXTCOLOR',(0,0),(-1,0),PRIMARY),
+('LINEABOVE',(0,0),(-1,0),2,PRIMARY), ('LINEBELOW',(0,0),(1,0),2,PRIMARY),
+('LINEBEFORE',(0,0),(0,-1),2,PRIMARY), ('LINEAFTER',(0,0),(0,-1),2.3,PRIMARY),
+('LINEAFTER',(-1,0),(-1,-1),2,BORDER), ('LINEBELOW',(0,-1),(-1,-1),2,BORDER)]
 
 def read(path, sort=False, sort_column=1):
     """
@@ -58,7 +66,7 @@ def save_schedule(my_schedule, halls, filename="schedule"):
     """
     # initialise schedule's header with hall names
     schedule = [[str(hall.name) for hall in halls]]
-    schedule[0].insert(0,"Schedule:")
+    schedule[0].insert(0,"SCHEDULE")
 
     for i,t in enumerate(zip(*my_schedule)):
         # transpose a schedule column to be a row
@@ -75,14 +83,7 @@ def save_schedule(my_schedule, halls, filename="schedule"):
         schedule.append(schedule_row)
 
     schedule = Table(schedule)
-
-    # define colors to make table fancier
-    red, grey, blue = HexColor(0xB22222), HexColor(0xdad5d2), HexColor(0x0094ff)
-    schedule.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),grey),
-    ('TEXTCOLOR',(0,0),(0,-1),red), ('TEXTCOLOR',(0,0),(-1,0),red),
-    ('LINEABOVE',(0,0),(-1,0),2,blue), ('LINEBELOW',(0,-1),(-1,-1),2,blue),
-    ('LINEBELOW',(0,0),(-1,0),2,blue), ('LINEBEFORE',(0,0),(0,-1),2,blue),
-    ('LINEAFTER',(-1,0),(-1,-1),2,blue), ('LINEAFTER',(0,0),(0,-1),2.3,blue)]))
+    schedule.setStyle(TableStyle(STYLE))
 
     # build filename.pdf
     width, height = (PADDING + TEACHING_SIZE*len(halls))*inch, 8.7*inch

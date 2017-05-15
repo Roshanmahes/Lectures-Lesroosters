@@ -30,19 +30,15 @@ def main():
     courses = create_course_list(course_list, students)
 
     # run some algorithms here
-<<<<<<< HEAD
-    schedule = algorithms.alphabetical(courses, halls)
-    print_schedule(schedule, halls)
-    print("Old score:", score(schedule, courses))
-
-    new_schedule = simulated_annealing(schedule, courses, halls, max_iter=1000, student_prob=0.5)
-    print_schedule(new_schedule, halls)
-    print("New score:", score(new_schedule, courses))
-=======
-    schedule = algorithms.alphabetical(courses,halls)
+    schedule = algorithms.random_fit(courses, halls)
     points = score(schedule,halls)
-    save_schedule(schedule,halls,str(points))
->>>>>>> origin/master
+    save_schedule(schedule, halls, str(points))
+    print("Old score:", points)
+
+    schedule = simulated_annealing(schedule, courses, halls, start_temp=100, max_iter=100000, student_prob=0.2)
+    points = score(schedule,halls)
+    save_schedule(schedule, halls, str(points))
+    print("New score:", points)
 
 if __name__ == "__main__":
     main()
