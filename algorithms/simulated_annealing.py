@@ -56,7 +56,7 @@ def acceptance_probability(old_score, new_score, temperature):
     if new_score > old_score:
         return 1
     else:
-        return math.exp(new_score-old_score / temperature)
+        return math.exp((new_score-old_score) / temperature)
 
 def random_teaching_swap(schedule, courses, halls):
     """

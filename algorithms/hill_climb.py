@@ -12,7 +12,8 @@ def hill_climb(schedule, courses, halls, runtime=1,
         for __ in range(student_iters):
             rand_int = random.randrange(len(courses))
             rand_type = random.choice(["seminar","practical"])
-            schedule = first_student_swap(schedule, courses, halls, rand_int, rand_type)
+            schedule = first_student_swap(schedule, courses,
+                halls, rand_int, rand_type)
         print("Students  swapped:", score(schedule, courses))
         for __ in range(teaching_iters):
             schedule = best_teaching_swap(schedule, courses, halls)
@@ -20,81 +21,10 @@ def hill_climb(schedule, courses, halls, runtime=1,
 
     return schedule
 
-def random_student_swap(schedule, courses, halls):
-    """
-    Swaps two randomly selected students of a randomly selected course
-    """
-    # randomly find a course in which a swap can be made
-    valid_courses = list(courses)
-    swappable_types = []
-    while not swappable_types:
-        course = random.choice(valid_courses)
-
-        if course.seminars or course.practicals:
-            if course.get_group_count("seminar") > 1:
-                swappable_types.append("seminar")
-            elif course.get_group_count("practical") > 1:
-                swappable_types.append("practical")
-        if not swappable_types:
-            valid_courses.remove(course)
-
-    # select a random type of teaching from the valid choices for course
-    teaching_type = random.choice(swappable_types)
-
-    # flatten schedule in such a way that the teachings are sorted by timeslot
-    # schedule is a list of lists, where each list contains
-    # teachings scheduled at a certain halls
-    schedule_flat = []
-    for timeslot in zip(*schedule):
-        for teaching in timeslot:
-            if teaching:
-                schedule_flat.append(classes.Teaching(teaching))
-            else:
-                schedule_flat.append(None)
-
-    # find all teachings in the given course of the given type
-    groups = []
-    for teaching in schedule_flat:
-        if teaching:
-            if teaching.course.name == course.name:
-                if teaching.type == teaching_type:
-                    groups.append(teaching)
-
-    # get the appropriate capacity
-    if teaching_type == "seminar":
-        capacity = groups[0].course.s_cap
-    else:
-        capacity = groups[0].course.p_cap
-
-    first_group = random.choice(groups).students
-
-    # if first_group only has 1 student it mustn't be removed
-    removable = True
-    if len(first_group) == 1:
-        removable = False
-    second_group = random.choice(groups).students
-
-    # randomly select students to swap by selecting indices
-    i = random.randrange(len(first_group))
-    if removable:
-        j = random.randrange(capacity)
-    else:
-        j = random.randrange(len(second_group))
-
-    # if j is within range, swap the students at i and j
-    try:
-        first_group[i], second_group[j] = second_group[j], first_group[i]
-    # if j is out of range, there is no student at j so put the i student there
-    except IndexError:
-        second_group.append(first_group[i])
-        first_group.pop(i)
-
-    return functions.inflate_schedule_flat(schedule_flat)
-
 def first_student_swap(schedule, courses, halls, course_index=0,
     teaching_type="seminar"):
     """
-    Finds a  swap of a pair of students for the given course and
+    Finds a swap of a pair of students for the given course and
     type of teaching that yields a better score (if it exists),
     returning a new schedule with these students swapped.
     """
