@@ -1,9 +1,0 @@
-Rekentijd:
-Beste score:
-Slechtste score:
-Mediaan:
-Gemiddelde:
-#Positieve scores:
-#Negatieve scores:
-SD:
-Variantie:

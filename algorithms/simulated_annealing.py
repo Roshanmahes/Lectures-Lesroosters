@@ -2,46 +2,61 @@ import classes
 import functions
 import math
 import random
+import time
+
 from score import *
+from functions import *
 
 def simulated_annealing(schedule, courses, halls, start_temp=1,
-    end_temp=0.0001, max_iter=200, student_prob=0.9):
+    end_temp=0.0001, max_iter=200, student_prob=0.5,
+    student_swaps=10, teaching_swaps=1, file_name="simulated_annealing.txt"):
     """
     Executes the simulated annealing algorithm.
     Returns a modified schedule.
     """
-    temperature = start_temp
 
-    # execute until minimum temperature is reached
-    while temperature > end_temp:
-        rand = random.random()
+    with open("results/" + file_name, "w") as output:
+        temperature = start_temp
+        start_time = time.time()
 
-        # perform student swap with probability student_prob
-        if student_prob > rand:
-            new_schedule = random_student_swap(schedule, courses, halls)
-            students_swapped = True
+        # execute until minimum temperature is reached
+        while temperature > end_temp:
+            rand = random.random()
 
-        # else perform teaching swap
-        else:
-            new_schedule = random_teaching_swap(schedule, courses, halls)
-            students_swapped = False
+            # perform student swap with probability student_prob
+            if student_prob > rand:
+                students_swapped = True
+                iter_count = student_swaps
+            # else perform teaching swap
+            else:
+                students_swapped = False
+                iter_count = teaching_swaps
 
-        # compute scores
-        old_score = score(schedule, courses)
-        new_score = score(new_schedule, courses)
-        probability = random.random()
+            for _ in range(iter_count):
+                # swap either students or teachings
+                if students_swapped:
+                    new_schedule = random_student_swap(schedule, courses, halls)
+                else:
+                    new_schedule = random_teaching_swap(schedule, courses, halls)
 
-        # compute probability of accepting new schedule
-        if acceptance_probability(old_score,new_score,
-            temperature) > probability:
-            schedule = new_schedule
+                # compute scores
+                old_score = score(schedule, courses)
+                new_score = score(new_schedule, courses)
+                if new_score > 1285:
+                    save_schedule(new_schedule, halls, str(new_score))
+                probability = random.random()
 
-        # decrement temperature
-        temperature *= ((end_temp/start_temp) ** (1/max_iter))
-        """if students_swapped:
-            temperature *= (1-student_prob) * ((end_temp/start_temp) ** (1/max_iter))
-        else:
-            temperature *= ((end_temp/start_temp) ** (1/max_iter))"""
+                # compute probability of accepting new schedule
+                if acceptance_probability(old_score,new_score,
+                    temperature) > probability:
+                    schedule = new_schedule
+
+                    points = score(schedule, courses)
+                    stop_time = time.time()
+                    output.write(str(points)+" "+str(stop_time-start_time)+" "+ str(temperature) + "\n")
+
+            # decrement temperature
+            temperature *= ((end_temp/start_temp) ** (1/max_iter))
 
     return schedule
 
@@ -53,7 +68,7 @@ def acceptance_probability(old_score, new_score, temperature):
     if new_score > old_score:
         return 1
     else:
-        return math.exp(new_score-old_score / temperature)
+        return math.exp((new_score-old_score) / temperature)
 
 def random_teaching_swap(schedule, courses, halls):
     """
