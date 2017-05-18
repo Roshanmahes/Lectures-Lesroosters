@@ -61,7 +61,7 @@ def create_course_list(course_list, students):
 
 def save_schedule(my_schedule, halls, filename="schedule"):
     """
-    Builds and saves a table (as filename.pdf)
+    Builds and saves a table (as filename.pdf in schedules folder)
     containing my_schedule with halls.
     """
     # initialise schedule's header with hall names

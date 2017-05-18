@@ -4,7 +4,7 @@ import random
 import time
 from score import *
 
-def hill_climb(schedule, courses, halls, runtime=1, 
+def hill_climb(schedule, courses, halls, runtime=1,
     student_iters=10, teaching_iters=1, file_name="hill_climb.txt"):
     """
     Executes the hill climbing algorithm. Returns a modified schedule.
@@ -176,3 +176,58 @@ def best_teaching_swap(schedule, courses, halls):
         best_schedule = random.choice(equiv_schedules)
 
     return best_schedule
+
+def first_teaching_swap(schedule, courses, halls):
+    """
+    Finds a beneficial swap of a pair of teachings (if it exists),
+    returning a new schedule with these teachings swapped.
+    """
+    # flatten schedule in such a way that the teachings are sorted by timeslot
+    # schedule is a list of lists, where each list contains
+    # teachings scheduled at a certain hall
+    schedule_flat = [teaching for timeslot in zip(*schedule)
+        for teaching in timeslot]
+    hall_count = len(halls)
+
+    best_schedule = schedule
+    best_score = score(schedule, courses)
+
+    # initialise array with 'equivalent' schedules (having the same score)
+    equiv_schedules = []
+    # check all possible swaps of teachings
+    for i, old_teaching in enumerate(schedule_flat):
+        for m, new_teaching in enumerate(schedule_flat[i+1:]):
+            # position of new_teaching in schedule_flat
+            j = m+i+1
+
+            # swap teachings
+            if new_teaching:
+                first_to_swap = classes.Teaching(new_teaching,
+                    hall=halls[i % hall_count])
+            else:
+                first_to_swap = None
+
+            if old_teaching:
+                second_to_swap = classes.Teaching(old_teaching,
+                    hall=halls[j % hall_count])
+            else:
+                second_to_swap = None
+
+            # create new_schedule from schedule
+            new_schedule = [None]*len(schedule)
+            for k,row in enumerate(schedule):
+                new_schedule[k] = list(row)
+            new_schedule[i % hall_count][i // hall_count] = first_to_swap
+            new_schedule[j % hall_count][j // hall_count] = second_to_swap
+
+            # compute new score
+            new_score = score(new_schedule, courses)
+            if new_score > best_score:
+                return new_schedule
+
+            # remember equivalent schedule
+            elif new_score == best_score:
+                equiv_schedules.append(new_schedule)
+
+    # choose randomly between the equivalent schedules
+    return random.choice(equiv_schedules)

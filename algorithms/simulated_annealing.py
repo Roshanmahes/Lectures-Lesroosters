@@ -7,27 +7,28 @@ import time
 from score import *
 from functions import *
 
-def simulated_annealing(schedule, courses, halls, start_temp=1,
-    end_temp=0.0001, max_iter=200, student_prob=0.5,
-    student_swaps=10, teaching_swaps=1, file_name="simulated_annealing.txt"):
+START_TEMP = 1
+END_TEMP = 0.0001
+
+def simulated_annealing(schedule, courses, halls, temp_iterator,
+    total_iters=2000, student_swaps=10, teaching_swaps=1, time_cap=60,
+    file_name="simulated_annealing.txt"):
     """
     Executes the simulated annealing algorithm.
     Returns a modified schedule.
     """
 
-    with open("results/" + file_name, "w") as output:
-        temperature = start_temp
+    with open("results/" + file_name, "w") as output_file:
+        temperature = START_TEMP
         start_time = time.time()
 
         # execute until minimum temperature is reached
-        while temperature > end_temp:
-            rand = random.random()
+        for i in range(total_iters):
 
-            # perform student swap with probability student_prob
-            if student_prob > rand:
+            # perform either a teaching swap or a student swap (choose randomly)
+            if random.choice([True, False]):
                 students_swapped = True
                 iter_count = student_swaps
-            # else perform teaching swap
             else:
                 students_swapped = False
                 iter_count = teaching_swaps
@@ -42,8 +43,6 @@ def simulated_annealing(schedule, courses, halls, start_temp=1,
                 # compute scores
                 old_score = score(schedule, courses)
                 new_score = score(new_schedule, courses)
-                if new_score > 1285:
-                    save_schedule(new_schedule, halls, str(new_score))
                 probability = random.random()
 
                 # compute probability of accepting new schedule
@@ -53,12 +52,27 @@ def simulated_annealing(schedule, courses, halls, start_temp=1,
 
                     points = score(schedule, courses)
                     stop_time = time.time()
-                    output.write(str(points)+" "+str(stop_time-start_time)+" "+ str(temperature) + "\n")
+                    output_file.write(str(points)+" "+str(stop_time-start_time)+"\n")
+
+                    if stop_time-start_time > time_cap:
+                        return schedule
 
             # decrement temperature
-            temperature *= ((end_temp/start_temp) ** (1/max_iter))
+            temperature = temp_iterator(temperature, total_iters, i, START_TEMP)
 
     return schedule
+
+def temp_linear(temperature, total_iters, i, START_TEMP):
+    return temperature - (START_TEMP - END_TEMP) / total_iters
+
+def temp_exponential(temperature, total_iters, i, START_TEMP):
+    return temperature * (END_TEMP / START_TEMP) ** (1 / total_iters)
+
+def temp_sigmoidal(temperature, total_iters, iv, START_TEMP):
+    return (START_TEMP - END_TEMP)/(1 + math.exp(0.3 * (i - total_iters/2))) + END_TEMP
+
+def temp_geman(temperature, total_iters, i, START_TEMP):
+    return START_TEMP/(math.log(i+1) + 1)
 
 def acceptance_probability(old_score, new_score, temperature):
     """

@@ -58,7 +58,7 @@ def alphabetical(courses, halls):
 
     return schedule
 
-def random_walk(courses, halls):
+def random_sample(courses, halls):
     """
     Creates a schedule, filling all halls with teachings randomly.
     Returns a list of lists containing Teaching objects.

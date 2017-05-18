@@ -1,6 +1,5 @@
 import classes
 import algorithms.algorithms as algorithms
-import algorithms.greedy as greedy
 import csv
 
 from algorithms.hill_climb import *
