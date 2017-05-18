@@ -4,7 +4,7 @@ import random
 import time
 from score import *
 
-def hill_climb(schedule, courses, halls, runtime=1,
+def hill_climb(schedule, courses, halls, runtime=1, 
     student_iters=10, teaching_iters=1, file_name="hill_climb.txt"):
     """
     Executes the hill climbing algorithm. Returns a modified schedule.
