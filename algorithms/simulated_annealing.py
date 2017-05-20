@@ -2,17 +2,20 @@ import classes
 import functions
 import math
 import random
-import time
+import time # TEMPORARY
+import os.path
 
 from score import *
 from functions import *
 
 START_TEMP = 1
-END_TEMP = 0.0001
+END_TEMP = 0.00001
+MAX_BRIDGE = 1
+SAVE_THIS = 1250 # TEMPORARY
 
 def simulated_annealing(schedule, courses, halls, temp_iterator,
     total_iters=2000, student_swaps=10, teaching_swaps=1, time_cap=60,
-    file_name="simulated_annealing.txt"):
+    file_name="exponential2.txt"):
     """
     Executes the simulated annealing algorithm.
     Returns a modified schedule.
@@ -51,8 +54,11 @@ def simulated_annealing(schedule, courses, halls, temp_iterator,
                     schedule = new_schedule
 
                     points = score(schedule, courses)
+                    if points > SAVE_THIS:
+                        if not os.path.isfile(str(points) + ".pdf"):
+                            save_schedule(schedule, halls, str(points))
                     stop_time = time.time()
-                    output_file.write(str(points)+" "+str(stop_time-start_time)+"\n")
+                    output_file.write(str(points)+" "+str(stop_time-start_time)+" "+str(temperature)+"\n")
 
                     if stop_time-start_time > time_cap:
                         return schedule
@@ -68,11 +74,11 @@ def temp_linear(temperature, total_iters, i, START_TEMP):
 def temp_exponential(temperature, total_iters, i, START_TEMP):
     return temperature * (END_TEMP / START_TEMP) ** (1 / total_iters)
 
-def temp_sigmoidal(temperature, total_iters, iv, START_TEMP):
+def temp_sigmoidal(temperature, total_iters, i, START_TEMP):
     return (START_TEMP - END_TEMP)/(1 + math.exp(0.3 * (i - total_iters/2))) + END_TEMP
 
 def temp_geman(temperature, total_iters, i, START_TEMP):
-    return START_TEMP/(math.log(i+1) + 1)
+    return MAX_BRIDGE/(math.log(i+1) + 1)
 
 def acceptance_probability(old_score, new_score, temperature):
     """
@@ -97,24 +103,25 @@ def random_teaching_swap(schedule, courses, halls):
     teaching_count = len(schedule_flat)
 
     # select random teachings
-    first_index = random.randrange(teaching_count)
-    second_index = random.randrange(teaching_count)
-    first_teaching = schedule_flat[first_index]
-    second_teaching = schedule_flat[second_index]
+    i = random.randrange(teaching_count)
+    j = random.randrange(teaching_count)
 
     # ensure teachings are different
-    while first_teaching == second_teaching:
-        second_teaching = random.choice(schedule_flat)
+    while i == j:
+        j = random.randrange(teaching_count)
+
+    first_teaching = schedule_flat[i]
+    second_teaching = schedule_flat[j]
 
     # swap teachings
     if second_teaching:
         first_to_swap = classes.Teaching(second_teaching,
-            hall=halls[first_index % hall_count])
+            hall=halls[i % hall_count])
     else:
         first_to_swap = None
     if first_teaching:
         second_to_swap = classes.Teaching(first_teaching,
-            hall=halls[second_index % hall_count])
+            hall=halls[j % hall_count])
     else:
         second_to_swap = None
 
@@ -124,10 +131,8 @@ def random_teaching_swap(schedule, courses, halls):
         new_schedule[k] = list(row)
 
     # swap teachings
-    new_schedule[first_index % hall_count] \
-        [first_index // hall_count] = first_to_swap
-    new_schedule[second_index % hall_count] \
-        [second_index // hall_count] = second_to_swap
+    new_schedule[i % hall_count][i // hall_count] = first_to_swap
+    new_schedule[j % hall_count][j // hall_count] = second_to_swap
 
     return new_schedule
 
