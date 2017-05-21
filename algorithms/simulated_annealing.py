@@ -11,7 +11,8 @@ from functions import *
 START_TEMP = 1
 END_TEMP = 0.00001
 MAX_BRIDGE = 1
-SAVE_THIS = 1250 # TEMPORARY
+SIG_CONST = 20
+SAVE_THIS = 1300 # TEMPORARY
 
 def simulated_annealing(schedule, courses, halls, temp_iterator,
     total_iters=2000, student_swaps=10, teaching_swaps=1, time_cap=60,
@@ -75,7 +76,7 @@ def temp_exponential(temperature, total_iters, i, START_TEMP):
     return temperature * (END_TEMP / START_TEMP) ** (1 / total_iters)
 
 def temp_sigmoidal(temperature, total_iters, i, START_TEMP):
-    return (START_TEMP - END_TEMP)/(1 + math.exp(0.3 * (i - total_iters/2))) + END_TEMP
+    return (START_TEMP - END_TEMP)/(1 + math.exp(SIG_CONST*i/total_iters - SIG_CONST/2)) + END_TEMP
 
 def temp_geman(temperature, total_iters, i, START_TEMP):
     return MAX_BRIDGE/(math.log(i+1) + 1)

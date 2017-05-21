@@ -29,11 +29,7 @@ def main():
     courses = create_course_list(course_list, students)
 
     # run some algorithms here
-    schedule = algorithms.random_fit(courses, halls)
 
-    schedule = simulated_annealing(schedule, courses, halls, temp_exponential,
-        total_iters=1000000, time_cap=1000000, file_name="myExponential.txt")
-    save_schedule(schedule, courses)
 
 if __name__ == "__main__":
     main()
