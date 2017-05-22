@@ -9,7 +9,7 @@ from score import *
 from functions import *
 
 START_TEMP = 1
-SAVE_THIS = 1320 # TEMPORARY
+SAVE_THIS = 1325 # TEMPORARY
 
 def simulated_annealing(schedule, courses, halls, temp_iterator,
     total_iters=2000, student_swaps=10, teaching_swaps=1, time_cap=60,

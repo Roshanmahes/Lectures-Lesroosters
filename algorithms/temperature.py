@@ -3,7 +3,7 @@ import math
 END_TEMP = 0.00001
 MAX_BRIDGE = 1
 SIG_CONST = 20
-ITER_THRESHOLD = 3000
+ITER_THRESHOLD = 100000
 REHEATS = 5
 
 def linear(temperature, total_iters, i, start_temp):
