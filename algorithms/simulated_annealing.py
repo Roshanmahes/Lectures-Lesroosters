@@ -21,7 +21,7 @@ def simulated_annealing(schedule, courses, halls, temp_iterator,
     temp_iterator must be a function from temperature.py
     """
 
-    with open("results/" + file_name, "w") as output_file:
+    with open("results/" + file_name, "a") as output_file:
         temperature = START_TEMP
         start_time = time.time()
 

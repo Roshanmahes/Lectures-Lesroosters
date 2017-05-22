@@ -1,7 +1,7 @@
 # Lectures & Lesroosters
 Programmeertheorie/Heuristieken case Lectures & Lesroosters - Roshan Mahes, Philip Roeleveld, Gido Limperg
 
-De laatste update van ons verslag is [hier](https://www.sharelatex.com/project/59187fabc5474c740b67101b/) te vinden.
+De laatste update van ons verslag is [hier](https://www.sharelatex.com/project/59187fabc5474c740b67101b/output/output.pdf?compileGroup=standard&clsiserverid=clsi2-18) te vinden.
 
 ## Toestandsruimte
 Het is zo eenvoudig nog niet om de grootte van de toestandsruimte te berekenen. Je moet namelijk zowel het aantal manieren waarop colleges in het rooster kunnen worden gezet, als het aantal manieren waarop de studenten kunnen worden ingeroosterd in alle werkcollege-, en practicumgroepen berekenen. Het eerste is relatief simpel. We bepalen het aantal slots M waarin colleges worden geroosterd en berekenen het aantal colleges n dat ingeroosterd moet worden en schrijven
