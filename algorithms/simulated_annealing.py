@@ -9,17 +9,16 @@ from score import *
 from functions import *
 
 START_TEMP = 1
-END_TEMP = 0.00001
-MAX_BRIDGE = 1
-SIG_CONST = 20
-SAVE_THIS = 1300 # TEMPORARY
+SAVE_THIS = 1320 # TEMPORARY
 
 def simulated_annealing(schedule, courses, halls, temp_iterator,
     total_iters=2000, student_swaps=10, teaching_swaps=1, time_cap=60,
-    file_name="exponential2.txt"):
+    file_name="simulated_annealing.txt"):
     """
     Executes the simulated annealing algorithm.
     Returns a modified schedule.
+
+    temp_iterator must be a function from temperature.py
     """
 
     with open("results/" + file_name, "w") as output_file:
@@ -69,17 +68,8 @@ def simulated_annealing(schedule, courses, halls, temp_iterator,
 
     return schedule
 
-def temp_linear(temperature, total_iters, i, START_TEMP):
-    return temperature - (START_TEMP - END_TEMP) / total_iters
 
-def temp_exponential(temperature, total_iters, i, START_TEMP):
-    return temperature * (END_TEMP / START_TEMP) ** (1 / total_iters)
 
-def temp_sigmoidal(temperature, total_iters, i, START_TEMP):
-    return (START_TEMP - END_TEMP)/(1 + math.exp(SIG_CONST*i/total_iters - SIG_CONST/2)) + END_TEMP
-
-def temp_geman(temperature, total_iters, i, START_TEMP):
-    return MAX_BRIDGE/(math.log(i+1) + 1)
 
 def acceptance_probability(old_score, new_score, temperature):
     """
