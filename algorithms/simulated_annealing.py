@@ -68,9 +68,6 @@ def simulated_annealing(schedule, courses, halls, temp_iterator,
 
     return schedule
 
-
-
-
 def acceptance_probability(old_score, new_score, temperature):
     """
     Computes the probability of accepting a new schedule.
@@ -85,11 +82,7 @@ def random_teaching_swap(schedule, courses, halls):
     """
     Swaps two randomly selected teachings, returning the new schedule.
     """
-    # flatten schedule in such a way that the teachings are sorted by timeslot
-    # schedule is a list of lists, where each list contains
-    # teachings scheduled at a certain hall
-    schedule_flat = [teaching for timeslot in zip(*schedule)
-        for teaching in timeslot]
+    schedule_flat = functions.flatten_schedule(schedule)
     hall_count = len(halls)
     teaching_count = len(schedule_flat)
 
@@ -110,6 +103,7 @@ def random_teaching_swap(schedule, courses, halls):
             hall=halls[i % hall_count])
     else:
         first_to_swap = None
+
     if first_teaching:
         second_to_swap = classes.Teaching(first_teaching,
             hall=halls[j % hall_count])
@@ -132,7 +126,6 @@ def random_student_swap(schedule, courses, halls):
     Swaps two randomly selected students of a randomly selected course,
     returning the new schedule.
     """
-
     # randomly find a course in which a swap can be made
     valid_courses = list(courses)
     swappable_types = []
@@ -150,16 +143,7 @@ def random_student_swap(schedule, courses, halls):
     # select a random type of teaching from the valid choices for course
     teaching_type = random.choice(swappable_types)
 
-    # flatten schedule in such a way that the teachings are sorted by timeslot
-    # schedule is a list of lists, where each list contains
-    # teachings scheduled at a certain halls
-    schedule_flat = []
-    for timeslot in zip(*schedule):
-        for teaching in timeslot:
-            if teaching:
-                schedule_flat.append(classes.Teaching(teaching))
-            else:
-                schedule_flat.append(None)
+    schedule_flat = functions.flatten_schedule(schedule, new_teachings=True)
 
     # find all teachings in the given course of the given type
     groups = []

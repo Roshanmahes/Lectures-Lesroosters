@@ -1,4 +1,5 @@
 import collections
+import functions
 from operator import itemgetter
 
 # configurations eligible for bonus points
@@ -13,11 +14,7 @@ def score(schedule, courses):
     # initial score
     score = 1000
 
-    # flatten schedule in such a way that the teachings are sorted by timeslot
-    # schedule is a list of lists, where each list contains
-    # teachings scheduled at a certain hall
-    schedule_flat = [teaching for timeslot in zip(*schedule)
-        for teaching in timeslot]
+    schedule_flat = functions.flatten_schedule(schedule)
 
     # calculate bonus and malus points
     score += capacity_points(schedule_flat) + conflict_points(schedule) \
@@ -35,7 +32,8 @@ def capacity_points(schedule_flat, malus=1):
     for teaching in schedule_flat:
         if teaching:
             if len(teaching.students) > teaching.hall.capacity:
-                points -= malus * (len(teaching.students) - teaching.hall.capacity)
+                points -= malus * (len(teaching.students) -
+                    teaching.hall.capacity)
 
     return points
 
@@ -97,7 +95,7 @@ def configuration_points(schedule, schedule_flat, courses, malus=10, bonus=20):
         # initialise variables
 
         # turns false if malus points are applied
-        so_far_so_good = True
+        no_malus_points = True
 
         # a string that represents the distribution of activities over the week
         activity_distribution = ""
@@ -114,8 +112,10 @@ def configuration_points(schedule, schedule_flat, courses, malus=10, bonus=20):
             successor = course_teachings[i+1]
 
             # day on which teaching (resp. its successor) takes place
-            teaching_day = schedule_flat.index(teaching) // len(schedule) // PERIODS
-            successor_day = schedule_flat.index(successor) // len(schedule) // PERIODS
+            teaching_day = schedule_flat.index(teaching) \
+                // len(schedule) // PERIODS
+            successor_day = schedule_flat.index(successor) \
+                // len(schedule) // PERIODS
 
             # reset daily variables if new day is reached
             if teaching_day != current_day:
@@ -139,17 +139,19 @@ def configuration_points(schedule, schedule_flat, courses, malus=10, bonus=20):
                 # hasn't been checked already
                 elif (successor.type != "seminar" or not seminar_had) and \
                         (successor.type != "practical" or not practical_had):
-                    so_far_so_good = False
+                    no_malus_points = False
                     points -= malus
                     if teaching.type == "seminar":
                         seminar_had = True
                     elif teaching.type == "practical":
                         practical_had = True
 
-        if so_far_so_good:
+        # if no malus points were given
+        if no_malus_points:
             if len(activity_distribution) > 0:
                 activity_distributions.append(activity_distribution[:-1])
 
+    # add points for each course which is in the optimal configuration
     for distribution in activity_distributions:
         if distribution in OPTIMAL_CONFIGURATIONS:
             points += bonus

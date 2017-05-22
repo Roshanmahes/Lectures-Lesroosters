@@ -1,4 +1,5 @@
 import classes
+import functions
 import random
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -39,9 +40,9 @@ def alphabetical(courses, halls):
     # keep track of how many timeslots have been filled for each hall
     tracker = [0] * len(halls)
 
+    # fill schedule with teachings
     for teaching in teachings:
         for i,hall in enumerate(halls):
-
             # if the amount of students fits into the hall
             if len(teaching.students) <= hall.capacity:
 
@@ -72,35 +73,15 @@ def random_sample(courses, halls):
                     course, course.students))
 
         if course.seminars:
-            group_count = course.get_group_count("seminar")
-            students_per_group = [0] * group_count
-
-            seminars = [classes.Teaching("seminar", course, [], ALPHABET[i]) \
-                    for i in range(group_count)]
-
-            for student in course.students:
-                rand = random.randint(0, group_count - 1)
-                while students_per_group[rand] == course.s_cap:
-                    rand = random.randint(0, group_count - 1)
-                seminars[rand].students.append(student)
-                students_per_group[rand] += 1
+            # randomly fill seminars with students
+            seminars = functions.fill_teaching_groups(course, "seminar")
 
             for seminar in seminars:
                 teachings.append(seminar)
 
         if course.practicals:
-            group_count = course.get_group_count("practical")
-            students_per_group = [0] * group_count
-
-            practicals = [classes.Teaching("practical", course, [], ALPHABET[i]) \
-                    for i in range(group_count)]
-
-            for student in course.students:
-                rand = random.randint(0, group_count - 1)
-                while students_per_group[rand] == course.p_cap:
-                    rand = random.randint(0, group_count - 1)
-                practicals[rand].students.append(student)
-                students_per_group[rand] += 1
+            # randomly fill seminars with students
+            practicals = functions.fill_teaching_groups(course, "practical")
 
             for practical in practicals:
                 teachings.append(practical)
@@ -108,19 +89,22 @@ def random_sample(courses, halls):
     # create an empty schedule of the right dimensions
     schedule = [[None]*TIMESLOTS for _ in range(len(halls))]
     entries = list(range(TIMESLOTS * len(halls)))
+
+    # randomly fill schedule with teachings
     for teaching in teachings:
+        # random position in schedule
         rand = entries[random.randint(0, len(entries) - 1)]
-        teaching.hall = halls[rand // 20]
-        schedule[rand // 20][rand % 20] = teaching
+
+        teaching.hall = halls[rand // TIMESLOTS]
+        schedule[rand // TIMESLOTS][rand % TIMESLOTS] = teaching
         entries.remove(rand)
 
     return schedule
 
 def random_fit(courses, halls):
     """
-    Creates a schedule, filling all halls with teachings
-    randomly provided that the hall is the first hall
-    which is available and large enough.
+    Creates a schedule, filling all halls with teachings randomly,
+    provided that the hall is available and large enough.
     Returns a list of lists containing Teaching objects.
     """
     teachings = []
@@ -132,35 +116,15 @@ def random_fit(courses, halls):
                     course, course.students))
 
         if course.seminars:
-            group_count = course.get_group_count("seminar")
-            students_per_group = [0] * group_count
-
-            seminars = [classes.Teaching("seminar", course, [], ALPHABET[i]) \
-                    for i in range(group_count)]
-
-            for student in course.students:
-                rand = random.randint(0, group_count - 1)
-                while students_per_group[rand] == course.s_cap:
-                    rand = random.randint(0, group_count - 1)
-                seminars[rand].students.append(student)
-                students_per_group[rand] += 1
+            # randomly fill seminars with students
+            seminars = functions.fill_teaching_groups(course, "seminar")
 
             for seminar in seminars:
                 teachings.append(seminar)
 
         if course.practicals:
-            group_count = course.get_group_count("practical")
-            students_per_group = [0] * group_count
-
-            practicals = [classes.Teaching("practical", course, [], ALPHABET[i]) \
-                    for i in range(group_count)]
-
-            for student in course.students:
-                rand = random.randint(0, group_count - 1)
-                while students_per_group[rand] == course.p_cap:
-                    rand = random.randint(0, group_count - 1)
-                practicals[rand].students.append(student)
-                students_per_group[rand] += 1
+            # randomly fill practicals with students
+            practicals = functions.fill_teaching_groups(course, "practical")
 
             for practical in practicals:
                 teachings.append(practical)
@@ -171,14 +135,15 @@ def random_fit(courses, halls):
     # keep track of how many timeslots have been filled for each hall
     tracker = [0] * len(halls)
 
-    teaching_index_list = random.sample(list(range(len(teachings))), len(teachings))
+    # create random ordering of numbers
+    teaching_index_list = random.sample(list(range(len(teachings))),
+        len(teachings))
 
+    # fill schedule with teachings
     for index in teaching_index_list:
-
         teaching = teachings[index]
 
         for i,hall in enumerate(halls):
-
             # if the amount of students fits into the hall
             if len(teaching.students) <= hall.capacity:
 
