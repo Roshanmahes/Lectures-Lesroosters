@@ -1,7 +1,7 @@
 import classes
 import algorithms.algorithms as algorithms
 import csv
-import temperature
+import algorithms.temperature as temperature
 
 from algorithms.hill_climb import *
 from algorithms.simulated_annealing import *
@@ -30,7 +30,7 @@ def main():
     courses = create_course_list(course_list, students)
 
     # run some algorithms here
-    
+
 
 if __name__ == "__main__":
     main()
