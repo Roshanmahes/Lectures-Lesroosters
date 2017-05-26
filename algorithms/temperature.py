@@ -3,8 +3,7 @@ import math
 END_TEMP = 0.00001
 MAX_BRIDGE = 1
 SIG_CONST = 20
-ITER_THRESHOLD = 100000
-REHEATS = 5
+REHEATS = 4
 
 def linear(temperature, total_iters, i, start_temp):
     return temperature - (start_temp - END_TEMP) / total_iters
@@ -24,12 +23,12 @@ def lin_sig(temperature, total_iters, i, start_temp):
     return sigmoidal(temperature, total_iters, i, start_temp)
 
 def exp_sig_full(temperature, total_iters, i, start_temp):
-    if i < ITER_THRESHOLD:
+    if i < total_iters/2:
         return exponential(temperature, total_iters, i, start_temp)
-    return sigmoidal(temperature, total_iters - ITER_THRESHOLD, i - ITER_THRESHOLD, start_temp)
+    return sigmoidal(temperature, total_iters - total_iters/2, i - total_iters/2, start_temp)
 
 def exp_sig_part(temperature, total_iters, i, start_temp):
-    if i < ITER_THRESHOLD:
+    if i < total_iters/2:
         return exponential(temperature, total_iters, i, start_temp)
     return sigmoidal(temperature, total_iters, i, start_temp)
 

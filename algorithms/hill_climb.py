@@ -2,24 +2,33 @@ import classes
 import functions
 import random
 import time
-from score import *
+from score import score
 
-def hill_climb(schedule, courses, halls, runtime=1,
-    student_iters=10, teaching_iters=1):
+def hill_climb(schedule, courses, halls, total_iters=3,
+    student_iters=1, teaching_iters=1, time_cap=60, file_name="hill_climb.txt"):
     """
     Executes the hill climbing algorithm. Returns a modified schedule.
     """
-    for _ in range(runtime):
-        for __ in range(student_iters):
-            # choose random course and type for student swap
-            rand_int = random.randrange(len(courses))
-            rand_type = random.choice(["seminar","practical"])
+    with open("results/" + file_name, "a") as output_file:
+        start_time = time.time()
 
-            schedule = first_student_swap(schedule, courses, halls,
-                rand_int, rand_type)
+        for _ in range(total_iters):
+            for __ in range(student_iters):
+                # choose random course and type for student swap
+                rand_int = random.randrange(len(courses))
+                rand_type = random.choice(["seminar","practical"])
 
-        for __ in range(teaching_iters):
-            schedule = best_teaching_swap(schedule, courses, halls)
+                schedule = first_student_swap(schedule, courses, halls,
+                    rand_int, rand_type)
+
+            for __ in range(teaching_iters):
+                schedule = best_teaching_swap(schedule, courses, halls)
+
+            stop_time = time.time()
+            output_file.write(str(score(schedule, courses))+" "+str(stop_time-start_time)+"\n")
+
+            if stop_time-start_time > time_cap:
+                return schedule
 
     return schedule
 
