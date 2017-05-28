@@ -12,7 +12,7 @@ START_TEMP = 1
 SAVE_THIS = 1345 # TEMPORARY
 
 def simulated_annealing(schedule, courses, halls, temp_iterator,
-    total_iters=2000, student_swaps=1, teaching_swaps=1, time_cap=60,
+    total_iters=13500, student_swaps=1, teaching_swaps=1, time_cap=60,
     file_name="simulated_annealing.txt"):
     """
     Executes the simulated annealing algorithm.

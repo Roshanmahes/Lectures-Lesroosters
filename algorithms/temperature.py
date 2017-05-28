@@ -39,3 +39,11 @@ def exp_reheat(temperature, total_iters, i, start_temp):
         elif i > int(total_iters * j/REHEATS):
             return exponential(temperature, total_iters * (1 - j/REHEATS), \
                     i - total_iters * (j/REHEATS), start_temp * (1 - j/REHEATS))
+
+def exp_lin(temperature, total_iters, i, start_temp):
+    if i == int(total_iters/2):
+        return start_temp/2
+    elif i < total_iters/2:
+        return exponential(temperature, total_iters, i, start_temp)
+    else:
+        return linear(temperature, total_iters, i, start_temp)
