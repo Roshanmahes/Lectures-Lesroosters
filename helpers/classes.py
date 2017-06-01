@@ -1,10 +1,8 @@
 class Course:
     """
-    Creates a course object containing course data and
-    a list of students following the course.
-    The course data is in the following format:
-    [name, lectures, seminars, seminar capacity,
-    practicals, practical capacity]
+    Creates a course object containing course data and a list of students
+    following the course. The course data is in the following format:
+    [name, lectures, seminars, seminar capacity, practicals, practical capacity]
     """
     def __init__(self, data, students):
         self.name = data[0]
@@ -17,14 +15,13 @@ class Course:
         self.activity_count = self.lectures + self.seminars + self.practicals
 
     def get_group_count(self, _type):
-        """Determine number of groups of type _type."""
-
+        """Returns the number of groups of type _type."""
         student_count = len(self.students)
         if _type == "seminar":
             if not self.seminars:
                 return 0
             capacity = self.s_cap
-        else:
+        elif _type == "practical":
             if not self.practicals:
                 return 0
             capacity = self.p_cap
@@ -36,9 +33,9 @@ class Course:
 
 class Student:
     """
-    Creates a student object containing student info and a list
-    of courses which the student is following. The student data is
-    in the following format: [last name, first name, id, course1, course2, ...]
+    Creates a student object containing student info and a list of courses
+    which the student is following. The student data is in the following format:
+    [last name, first name, id, course1, course2, ...]
     """
     def __init__(self, data):
         self.name = data[1] + " " + data[0]
@@ -53,9 +50,10 @@ class Teaching:
     """
     Creates a teaching object containing the type of teaching, course data,
     a list of students following the teaching and the hall.
-    Input is another teaching object (with optional additional hall arg),
-    in which case arg1 is a Teaching object, or manual entry of each argument,
-    in which case arg1 is one of "lecture", "seminar" or "practical".
+    Input to the constructor is either another teaching object (with optional
+    additional hall arg) in which case arg1 is a Teaching object,
+    or manual entry of each argument, in which case arg1 is one of
+    "lecture", "seminar" or "practical".
     """
     def __init__(self, arg1, course=None, students=[], group="",
         hall=None):
@@ -85,7 +83,8 @@ class Teaching:
 class TeachingHall:
     """
     Creates a teaching hall object containing hall data.
-    The data is in the following format: [name, capacity].
+    The data is in the following format:
+    [name, capacity].
     """
     def __init__(self, data):
         self.name = data[0]

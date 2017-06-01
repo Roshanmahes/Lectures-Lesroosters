@@ -1,4 +1,4 @@
-import classes
+from helpers import classes
 import csv
 import random
 
@@ -17,8 +17,6 @@ TIMESLOTS = len(WEEKDAYS)*PERIODS
 
 # globals for save_schedule
 PADDING, TEACHING_SIZE = 4, 3.2
-
-# default tablestyle
 PRIMARY, ACCENT, BORDER =  Color(0xD0D0D0), Color(0x818181), Color(0x7D7D7D)
 STYLE = [('BACKGROUND',(0,0),(-1,-1),ACCENT), ('TEXTCOLOR',(0,0),(0,-1),PRIMARY),
 ('BACKGROUND',(1,1),(-1,-1),PRIMARY), ('TEXTCOLOR',(0,0),(-1,0),PRIMARY),
@@ -26,10 +24,30 @@ STYLE = [('BACKGROUND',(0,0),(-1,-1),ACCENT), ('TEXTCOLOR',(0,0),(0,-1),PRIMARY)
 ('LINEBEFORE',(0,0),(0,-1),2,PRIMARY), ('LINEAFTER',(0,0),(0,-1),2.3,PRIMARY),
 ('LINEAFTER',(-1,0),(-1,-1),2,BORDER), ('LINEBELOW',(0,-1),(-1,-1),2,BORDER)]
 
+def read(path, sort=False, sort_column=1):
+    """
+    Reads the csv file at path and returns a list, stripping the first row
+    if it contains no digits (if it is a header).
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        result = list(csv.reader(f))
+
+    # strip the first row if it is a header
+    if not any(item.isdigit() for item in result[0]):
+        result = result[1:]
+
+    if sort:
+        # sort items by column sort_column
+        for item in result:
+            item[sort_column] = int(item[sort_column])
+        result.sort(key=itemgetter(sort_column))
+
+    return result
+
 def create_course_list(course_list, students):
     """
-    Returns a list of Course objects, each
-    containing students following the course.
+    Returns a list of Course objects, each containing the students that follow
+    the course.
     """
     courses = [classes.Course(data, []) for data in course_list]
 
@@ -42,6 +60,31 @@ def create_course_list(course_list, students):
                     break
 
     return courses
+
+def init_data():
+    """
+    Initialises lists of all the necessary objects from the files
+    students.csv, courses.csv and halls.csv in the data folder.
+
+    students.csv is in the following format:
+    last name, first name, id, courses
+    courses.csv is in the following format:
+    name, lectures, seminars, seminar capacity, practicals, practical capacity
+    halls.csv is in the following format:
+    name, capacity
+
+    Returns a tuple in the following format:
+    (courses, halls, students)
+    """
+    student_list = read("data/students.csv")
+    course_list = read("data/courses.csv")
+    hall_list = read("data/halls.csv", sort=True)
+
+    students = [classes.Student(data) for data in student_list]
+    halls = [classes.TeachingHall(data) for data in hall_list]
+    courses = create_course_list(course_list, students)
+
+    return (courses, halls, students)
 
 def fill_teaching_groups(course, _type):
     """
@@ -107,31 +150,21 @@ def inflate_schedule_flat(schedule_flat):
 
     return schedule
 
-def read(path, sort=False, sort_column=1):
+def save_schedule(my_schedule, halls, file_name="schedule", height=8.7*inch):
     """
-    Reads csv file from path and returns a list, stripping the first row
-    if it contains no digits (if it is a header).
-    """
-    with open(path, "r", encoding="utf-8") as f:
-        result = list(csv.reader(f))
-
-    # strip the first row if it is a header
-    if not any(item.isdigit() for item in result[0]):
-        result = result[1:]
-
-    if sort:
-        # sort items by column sort_column
-        for item in result:
-            item[sort_column] = int(item[sort_column])
-        result.sort(key=itemgetter(sort_column))
-
-    return result
-
-def save_schedule(my_schedule, halls, filename="schedule", height=8.7*inch):
-    """
-    Builds and saves a table (as filename.pdf in schedules folder)
+    Builds and saves a table (as file_name.pdf in the schedules folder)
     containing my_schedule with halls.
     """
+    # append a number to file_name if file_name.pdf already exists
+    save_at = str(file_name)
+    while os.path.isfile(save_at + ".pdf"):
+        try:
+            _ = save_at.index("_")
+            save_at[_ + 1:] = str(int(save_at[_ + 1:]) + 1)
+            save_at += "_1"
+        except ValueError:
+            save_at += "_1"
+
     # initialise schedule's header with hall names
     schedule = [[str(hall.name) for hall in halls]]
     schedule[0].insert(0,"SCHEDULE")
@@ -153,7 +186,7 @@ def save_schedule(my_schedule, halls, filename="schedule", height=8.7*inch):
     schedule = Table(schedule)
     schedule.setStyle(TableStyle(STYLE))
 
-    # build filename.pdf
+    # build file_name.pdf
     width = (PADDING + TEACHING_SIZE*len(halls)) * inch
-    SimpleDocTemplate("schedules/" + str(filename) + ".pdf",
+    SimpleDocTemplate("schedules/" + save_at + ".pdf",
         pagesize=(width, height)).build([schedule])

@@ -1,29 +1,27 @@
-import classes
-import functions
-import math
+from helpers import classes, functions
+from helpers.score import score
+from . import temperature
+from math import exp
+from time import time
 import random
-import time # TEMPORARY
 import os.path
 
-from score import *
-from functions import *
-
-START_TEMP = 1
-SAVE_THIS = 1345 # TEMPORARY
-
 def simulated_annealing(schedule, courses, halls, temp_iterator,
-    total_iters=13500, student_swaps=1, teaching_swaps=1, time_cap=60,
-    file_name="simulated_annealing.txt"):
+    total_iters=100000, student_swaps=1, teaching_swaps=1,
+    file_name="simulated_annealing", save_result=False):
     """
-    Executes the simulated annealing algorithm.
-    Returns a modified schedule.
+    Executes the simulated annealing algorithm. Returns a modified schedule.
+    Appends the score, temperature and timestamp to resutls/file_name.txt after
+    every swap.
 
-    temp_iterator must be a function from temperature.py
+    temp_iterator must be a function from temperature.py.
+    Set save_result to True to save a representation of the final schedule as
+    a pdf in the schedules folder.
     """
 
-    with open("results/" + file_name, "a") as output_file:
-        temperature = START_TEMP
-        start_time = time.time()
+    with open("results/" + file_name + ".txt", "a") as output_file:
+        temp = temperature.START_TEMP
+        start_time = time()
 
         # execute until minimum temperature is reached
         for i in range(total_iters):
@@ -50,33 +48,32 @@ def simulated_annealing(schedule, courses, halls, temp_iterator,
 
                 # compute probability of accepting new schedule
                 if acceptance_probability(old_score,new_score,
-                    temperature) > probability:
+                    temp) > probability:
                     schedule = new_schedule
 
                     points = score(schedule, courses)
-                    if points > SAVE_THIS:
-                        if not os.path.isfile(str(points) + ".pdf"):
-                            save_schedule(schedule, halls, str(points))
-                    stop_time = time.time()
-                    output_file.write(str(points)+" "+str(stop_time-start_time)+" "+str(temperature)+"\n")
 
-                    if stop_time-start_time > time_cap:
-                        return schedule
+                    stop_time = time()
+                    output_file.write(str(points)+" "+ \
+                            str(stop_time-start_time)+" "+str(temp)+"\n")
 
             # decrement temperature
-            temperature = temp_iterator(temperature, total_iters, i, START_TEMP)
+            temp = temp_iterator(temp, total_iters, i)
 
+    if save_result:
+        functions.save_schedule(schedule, halls, str(points))
     return schedule
 
-def acceptance_probability(old_score, new_score, temperature):
+def acceptance_probability(old_score, new_score, temp):
     """
-    Computes the probability of accepting a new schedule.
+    Computes the probability of accepting a new schedule, returning a number
+    between 0 and 1.
     """
     # always accept if the score is better
     if new_score > old_score:
         return 1
     else:
-        return math.exp((new_score-old_score) / temperature)
+        return exp((new_score-old_score) / temp)
 
 def random_teaching_swap(schedule, courses, halls):
     """

@@ -3,18 +3,41 @@ Programmeertheorie/Heuristieken case Lectures & Lesroosters - Roshan Mahes, Phil
 
 De laatste update van ons verslag is [hier](https://www.sharelatex.com/project/59187fabc5474c740b67101b/output/output.pdf?compileGroup=standard&clsiserverid=clsi2-18) te vinden.
 
-## Toestandsruimte
-Het is zo eenvoudig nog niet om de grootte van de toestandsruimte te berekenen. Je moet namelijk zowel het aantal manieren waarop colleges in het rooster kunnen worden gezet, als het aantal manieren waarop de studenten kunnen worden ingeroosterd in alle werkcollege-, en practicumgroepen berekenen. Het eerste is relatief simpel. We bepalen het aantal slots M waarin colleges worden geroosterd en berekenen het aantal colleges n dat ingeroosterd moet worden en schrijven
-<p align="center">
-<img src="https://raw.githubusercontent.com/Roshanmahes/Lectures-Lesroosters/master/README%20resources/latex1.png"/>
-</p>
-voor het aantal manieren om colleges in te roosteren. De andere kant van het verhaal is lastiger. Voor het aantal manieren om studenten in groepen te zetten berekenen we dan ook niet de exacte waarde, maar een adequate bovengrens. Per vak nemen we de capaciteit van een college en het aantal studenten s dat het vak volgt en berekenen we per college van het aantal groepen g dat nodig om alle studenten in te roosteren. Dan is de waarde
-<p align="center">
-<br>
-<img src="https://raw.githubusercontent.com/Roshanmahes/Lectures-Lesroosters/master/README%20resources/latex2.png"/>
-</p>
-een bovengrens voor het aantal manieren waarop studenten kunnen worden ingeroosterd. Vermenigvuldigen we de twee bovenstaande getallen nu met elkaar, dan vinden we de bovengrens
-<p align="center">
-<br>
-<img src="https://raw.githubusercontent.com/Roshanmahes/Lectures-Lesroosters/master/README%20resources/latex3.png"/>
-</p>
+
+## Algemene informatie
+Zie het bestand _requirements.txt_ voor de packages die nodig zijn om de programma's te laten werken.
+Alle resultaten die zijn gebruikt in het verslag zijn te vinden in de folder _results_.
+Opgeslagen roosters (inclusief het door ons best gevonden rooster en het allereerste rooster) zijn te vinden in de folder _schedules_.
+_hill\_climb\_script.py_ en _simulated\_annealing\_script.py_ kunnen worden uitgevoerd om de gelijknamige algoritmes te laten lopen.
+Beide scripts duren ongeveer tien minuten maar kunnen worden uitgevoerd met een extra commandline argument om het aantal iteraties te veranderen.
+(De standaardwaardes zijn 30 en 100000 respectievelijk.)
+Naast deze scripts kunnen in _main.py_ handmatig functies worden aangeroepen zoals de functie die de grootte van de toestandsruimte berekent.
+
+## Bestandsstructuur
+__algorithms__
+
+- hill\_climb.py - Het Hill Climbing algoritme en de swap functies die het gebruikt.
+- make\_schedule.py - Drie rooster makende functies, alphabetical, random\_sample, en random\_fit.
+- simulated\_annealing.py - Het Simulated Annealing algoritme en de swap functies die het gebruikt.
+- temperature.py - Alle temperatuurfuncties die gebruikt kunnen worden voor het Simulated Annealing algoritme.
+
+__data__ - Folder met alle case-specifieke bestanden.
+
+__helpers__
+
+- classes.py - Alle class declaraties.
+- functions.py - Alle overige hulpfuncties.
+- score.py - De functies waarmee de score word berekend.
+- state\_space.py - De functie om de toestandsruimte te berekenen.
+
+__results__ - Alle resultaten die zijn gebruikt. Dit is ook waar nieuwe resultaten gegeenereerd door een van de scripts of main.py terechtkomen.
+
+__schedules__ - Hier komen alle pdf bestanden van roosters in te staan.
+
+__hill\_climb\_script.py__ - Een basaal script dat het Hill Climbing algoritme uitvoert.
+
+__main.py__ - Importeert alle andere bestanden en initialiseert de data. Voer vanuit hier algoritmes en andere functies uit.
+
+__requirements.txt__ - Zie boven.
+
+__simulated\_annealing\_script.py__ - Een basaal script dat het Simulated Annealing algoritme uitvoert.

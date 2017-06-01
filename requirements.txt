@@ -1,5 +1,5 @@
 # This file specifies which packages are required in order to run the
-# program successfully.
+# programs successfully.
 # To install them, paste 'pip install requirements.txt' into your terminal.
 
 reportlab==3.4.0

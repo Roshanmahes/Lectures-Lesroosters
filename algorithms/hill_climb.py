@@ -1,15 +1,19 @@
-import classes
-import functions
+from helpers import classes, functions
+from helpers.score import score
 import random
 import time
-from score import score
 
-def hill_climb(schedule, courses, halls, total_iters=3,
-    student_iters=1, teaching_iters=1, time_cap=60, file_name="hill_climb.txt"):
+def hill_climb(schedule, courses, halls, total_iters=30, student_iters=1,
+    teaching_iters=1, file_name="hill_climb", save_result=False):
     """
     Executes the hill climbing algorithm. Returns a modified schedule.
+    Appends the score, temperature and timestamp to results/file_name.txt after
+    every swap.
+
+    Set save_result to True to save a representation of the final schedule as
+    a pdf in the schedules folder.
     """
-    with open("results/" + file_name, "a") as output_file:
+    with open("results/" + file_name + ".txt", "w") as output_file:
         start_time = time.time()
 
         for _ in range(total_iters):
@@ -25,11 +29,11 @@ def hill_climb(schedule, courses, halls, total_iters=3,
                 schedule = best_teaching_swap(schedule, courses, halls)
 
             stop_time = time.time()
-            output_file.write(str(score(schedule, courses))+" "+str(stop_time-start_time)+"\n")
+            output_file.write(str(score(schedule, courses))+" "+ \
+                    str(stop_time-start_time)+"\n")
 
-            if stop_time-start_time > time_cap:
-                return schedule
-
+    if save_result:
+        save_schedule(schedule, halls, str(score(schedule, courses)))
     return schedule
 
 def first_student_swap(schedule, courses, halls, course_index=0,
@@ -46,7 +50,7 @@ def first_student_swap(schedule, courses, halls, course_index=0,
 
     course = courses[course_index]
 
-    # if  the course has no seminars resp. practicals
+    # if  the course has no seminars (resp. practicals)
     if not course.get_group_count(teaching_type):
         return schedule
 
@@ -76,12 +80,13 @@ def first_student_swap(schedule, courses, halls, course_index=0,
             for another_group in groups:
                 other_students = another_group.students
                 # if there are two or more students in the group and less
-                # students in the other group than the capacity
+                # students than the capacity in the other group
                 if len(students) > 1 and len(other_students) < capacity:
                     # put student into the other group
                     students.pop(j)
                     other_students.append(student)
-                    new_schedule = functions.inflate_schedule_flat(schedule_flat)
+                    new_schedule = functions. \
+                            inflate_schedule_flat(schedule_flat)
 
                     # done if the score is better
                     if old_score < score(new_schedule, courses):
@@ -96,7 +101,8 @@ def first_student_swap(schedule, courses, halls, course_index=0,
                         # swap students
                         students[j], other_students[k] = \
                                 other_students[k], students[j]
-                        new_schedule = functions.inflate_schedule_flat(schedule_flat)
+                        new_schedule = functions. \
+                                inflate_schedule_flat(schedule_flat)
 
                         # done if the score is better
                         if old_score < score(new_schedule, courses):
@@ -120,8 +126,9 @@ def best_teaching_swap(schedule, courses, halls):
     best_schedule = schedule
     best_score = score(schedule, courses)
 
-    # initialise array with 'equivalent' schedules (having the same score)
+    # initialise array for 'equivalent' schedules (having the same score)
     equiv_schedules = []
+
     # check all possible swaps of teachings
     for i, old_teaching in enumerate(schedule_flat):
         for m, new_teaching in enumerate(schedule_flat[i+1:]):

@@ -1,5 +1,4 @@
-import classes
-import functions
+from helpers import classes, functions
 import random
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -18,7 +17,7 @@ def alphabetical(courses, halls):
         for _ in range(course.lectures):
             # assign students to lecture
             teachings.append(classes.Teaching("lecture",
-                course, course.students))
+                    course, course.students))
 
         if course.seminars:
             # assign students to seminar groups (in alphabetical order)
@@ -42,20 +41,7 @@ def alphabetical(courses, halls):
 
     # fill schedule with teachings
     for teaching in teachings:
-        for i,hall in enumerate(halls):
-            # if the amount of students fits into the hall
-            if len(teaching.students) <= hall.capacity:
-
-                # if less than all slots have been filled
-                if tracker[i] < TIMESLOTS:
-
-                    # insert the teaching into the schedule
-                    schedule[i][tracker[i]] = teaching
-
-                    # add hall to teaching object
-                    teaching.hall = halls[i]
-                    tracker[i] += 1
-                    break
+        greedy_fill(schedule, teachings, halls, tracker)
 
     return schedule
 
@@ -64,27 +50,7 @@ def random_sample(courses, halls):
     Creates a schedule, filling all halls with teachings randomly.
     Returns a list of lists containing Teaching objects.
     """
-    teachings = []
-
-    for course in courses:
-        for _ in range(course.lectures):
-            # assign students to lecture
-            teachings.append(classes.Teaching("lecture",
-                    course, course.students))
-
-        if course.seminars:
-            # randomly fill seminars with students
-            seminars = functions.fill_teaching_groups(course, "seminar")
-
-            for seminar in seminars:
-                teachings.append(seminar)
-
-        if course.practicals:
-            # randomly fill seminars with students
-            practicals = functions.fill_teaching_groups(course, "practical")
-
-            for practical in practicals:
-                teachings.append(practical)
+    teachings = random_fill_teachings(courses)
 
     # create an empty schedule of the right dimensions
     schedule = [[None]*TIMESLOTS for _ in range(len(halls))]
@@ -107,6 +73,32 @@ def random_fit(courses, halls):
     provided that the hall is available and large enough.
     Returns a list of lists containing Teaching objects.
     """
+    teachings = random_fill_teachings(courses)
+
+    # create an empty schedule of the right dimensions
+    schedule = [[None]*TIMESLOTS for _ in range(len(halls))]
+
+    # keep track of how many timeslots have been filled for each hall
+    tracker = [0] * len(halls)
+
+    # create random ordering of numbers
+    teaching_index_list = random.sample(list(range(len(teachings))),
+        len(teachings))
+
+    # fill schedule with teachings
+    for index in teaching_index_list:
+        teaching = teachings[index]
+
+        greedy_fill(schedule, courses, halls, tracker)
+
+    return schedule
+
+def random_fill_teachings(courses):
+    """
+    Iterate over courses and make a list of teachings such that all seminar
+    and practical groups are filled with students randomly.
+    Returns a list of teachings.
+    """
     teachings = []
 
     for course in courses:
@@ -123,39 +115,30 @@ def random_fit(courses, halls):
                 teachings.append(seminar)
 
         if course.practicals:
-            # randomly fill practicals with students
+            # randomly fill seminars with students
             practicals = functions.fill_teaching_groups(course, "practical")
 
             for practical in practicals:
                 teachings.append(practical)
 
-    # create an empty schedule of the right dimensions
-    schedule = [[None]*TIMESLOTS for _ in range(len(halls))]
+    return teachings
 
-    # keep track of how many timeslots have been filled for each hall
-    tracker = [0] * len(halls)
+def greedy_fill(schedule, teachings, halls, tracker):
+    """
+    Fill the schedule with the teacings so that no teaching is put into a hall
+    with a capacity smaller than the amount of students in the teaching.
+    """
+    for i,hall in enumerate(halls):
+        # if the amount of students fits into the hall
+        if len(teaching.students) <= hall.capacity:
 
-    # create random ordering of numbers
-    teaching_index_list = random.sample(list(range(len(teachings))),
-        len(teachings))
+            # if less than all slots have been filled
+            if tracker[i] < TIMESLOTS:
 
-    # fill schedule with teachings
-    for index in teaching_index_list:
-        teaching = teachings[index]
+                # insert the teaching into the schedule
+                schedule[i][tracker[i]] = teaching
 
-        for i,hall in enumerate(halls):
-            # if the amount of students fits into the hall
-            if len(teaching.students) <= hall.capacity:
-
-                # if less than all slots have been filled
-                if tracker[i] < TIMESLOTS:
-
-                    # insert the teaching into the schedule
-                    schedule[i][tracker[i]] = teaching
-
-                    # add hall to teaching object
-                    teaching.hall = halls[i]
-                    tracker[i] += 1
-                    break
-
-    return schedule
+                # add hall to teaching object
+                teaching.hall = halls[i]
+                tracker[i] += 1
+                break

@@ -1,5 +1,5 @@
+from helpers import functions
 import collections
-import functions
 from operator import itemgetter
 
 # configurations eligible for bonus points
@@ -26,6 +26,7 @@ def capacity_points(schedule_flat, malus=1):
     """
     Compute malus points, deducting points if the number of students
     in a teaching exceeds the capacity.
+    Returns an integer.
     """
     points = 0
 
@@ -41,11 +42,12 @@ def conflict_points(schedule, malus=1):
     """
     Compute malus points, deducting points if a student
     has multiple teachings at once.
+    Returns an integer.
     """
     points = 0
 
     for timeslot in zip(*schedule):
-        # list of students following a teaching at timeslot
+        # list of students that follow a teaching in the timeslot
         students = []
 
         # add students in each teaching at timeslot
@@ -74,6 +76,7 @@ def configuration_points(schedule, schedule_flat, courses, malus=10, bonus=20):
     Points are deducted if there are multiple teachings
     of the same course on the same day.
     Points are added if the teachings are optimally distributed.
+    Returns an integer.
     """
     points = 0
 
@@ -146,12 +149,11 @@ def configuration_points(schedule, schedule_flat, courses, malus=10, bonus=20):
                     elif teaching.type == "practical":
                         practical_had = True
 
-        # if no malus points were given
         if no_malus_points:
             if len(activity_distribution) > 0:
                 activity_distributions.append(activity_distribution[:-1])
 
-    # add points for each course which is in the optimal configuration
+    # add points for each course which is in an optimal configuration
     for distribution in activity_distributions:
         if distribution in OPTIMAL_CONFIGURATIONS:
             points += bonus
