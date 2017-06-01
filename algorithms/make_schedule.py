@@ -41,7 +41,7 @@ def alphabetical(courses, halls):
 
     # fill schedule with teachings
     for teaching in teachings:
-        greedy_fill(schedule, teachings, halls, tracker)
+        greedy_fill(schedule, teaching, halls, tracker)
 
     return schedule
 
@@ -89,7 +89,7 @@ def random_fit(courses, halls):
     for index in teaching_index_list:
         teaching = teachings[index]
 
-        greedy_fill(schedule, courses, halls, tracker)
+        greedy_fill(schedule, teaching, halls, tracker)
 
     return schedule
 
@@ -123,7 +123,7 @@ def random_fill_teachings(courses):
 
     return teachings
 
-def greedy_fill(schedule, teachings, halls, tracker):
+def greedy_fill(schedule, teaching, halls, tracker):
     """
     Fill the schedule with the teacings so that no teaching is put into a hall
     with a capacity smaller than the amount of students in the teaching.
