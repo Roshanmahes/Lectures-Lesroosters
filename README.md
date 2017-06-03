@@ -1,7 +1,7 @@
 # Lectures & Lesroosters
 Programmeertheorie/Heuristieken case Lectures & Lesroosters - Roshan Mahes, Philip Roeleveld, Gido Limperg
 
-De laatste update van ons verslag is [hier](https://www.sharelatex.com/project/59187fabc5474c740b67101b/output/output.pdf?compileGroup=standard&clsiserverid=clsi2-18) te vinden.
+Ons verslag is [hier](https://github.com/Roshanmahes/Lectures-Lesroosters/blob/master/verslag.pdf) te vinden.
 
 
 ## Algemene informatie
